@@ -63,4 +63,4 @@ replay_pid*
 
 
 # yml 제외
-.yml
+*.yml
