@@ -17,7 +17,7 @@ public class Image extends BaseEntity {
     @Id
     @Column(name = "image_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long imageId;   // 식별자
+    private Long id;   // 식별자
 
     @Column(nullable = false)
     private String imageurl;    // 이미지 링크

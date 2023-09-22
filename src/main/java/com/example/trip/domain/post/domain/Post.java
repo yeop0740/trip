@@ -27,7 +27,7 @@ public class Post extends BaseEntity {
     @Id
     @Column(name = "post_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postId;    // 식별자
+    private Long id;    // 식별자
 
     @Column(nullable = false)
     private String title;   // 게시물 제목

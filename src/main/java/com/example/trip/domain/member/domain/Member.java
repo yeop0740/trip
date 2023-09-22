@@ -24,13 +24,13 @@ public class Member extends BaseEntity {
     @Id
     @Column(name = "member_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberId;  // 식별자
+    private Long id;  // 식별자
 
     @Column(nullable = false)
     private String nickname;    // 사용자 별칭
 
     @Column(unique = true, nullable = false)
-    private String id;  // 사용자 id
+    private String userId;  // 사용자 id
 
     @Column(nullable = false)
     private String password;    // 사용자 비밀번호

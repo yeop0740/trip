@@ -19,7 +19,7 @@ public class Comment extends BaseEntity {
     @Id
     @Column(name = "comment_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long commentId;     // 식별자
+    private Long id;     // 식별자
 
     @Column(nullable = false)
     private String content;     // 댓글 내용

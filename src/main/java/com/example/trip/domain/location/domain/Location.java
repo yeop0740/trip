@@ -22,7 +22,7 @@ public class Location extends BaseEntity {
     @Id
     @Column(name = "location_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long locationId;    // 식별자
+    private Long id;    // 식별자
 
     @Column(precision = 15, scale = 10)
     private BigDecimal latitude;    // 위도

@@ -18,7 +18,7 @@ public class Interaction extends BaseEntity {
     @Id
     @Column(name = "interaction_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long interactionId; // 식별자
+    private Long id; // 식별자
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

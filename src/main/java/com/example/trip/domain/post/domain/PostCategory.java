@@ -17,7 +17,7 @@ public class PostCategory extends BaseEntity {
     @Id
     @Column(name = "post_category_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postCategoryId;    // 식별자
+    private Long id;    // 식별자
 
 
     @ManyToOne

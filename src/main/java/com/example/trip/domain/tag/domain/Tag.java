@@ -17,14 +17,14 @@ public class Tag extends BaseEntity {
     @Id
     @Column(name = "tag_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long tagId;
+    private Long id;    // 식별자
 
     @Column(nullable = false)
-    private String name;
+    private String name;    // tag 이름
 
     @ManyToOne
     @JoinColumn(name = "post_id")
-    private Post post;
+    private Post post;  // 테그가 달릴 게시물
 
 
     // 연관관계 메소드
