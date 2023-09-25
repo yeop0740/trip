@@ -9,9 +9,9 @@ import com.example.trip.domain.member.location.domain.Location;
 import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.tag.domain.Tag;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseEntity {
 
     @Id
@@ -42,6 +42,7 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;  // 게시물 작성자
 
+    @Cascade(CascadeType.ALL)
     @OneToMany(mappedBy = "post")
     private List<PostCategory> postCategoryList = new ArrayList<>();    // 게시물에 대한 카테고리 모음 리스트
 
@@ -57,9 +58,22 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post")
     private List<Interaction> interactionList = new ArrayList<>();  // 게시물에 엮인 상호작용 내역 리스트
 
+    @Cascade(CascadeType.ALL)
     @OneToMany(mappedBy = "post")
-    private List<Tag> tagList = new ArrayList<>();  // 게시물에 대한 테그 리스트
+    private List<Tag> tagList = new ArrayList<>();  // 게시물에 대한 태그 리스트
 
+    @Builder
+    public Post(String title, String content, Member member, List<PostCategory> postCategoryList, List<Location> locationList, List<Image> imageList, List<Tag> tagList) {
+        this.title = title;
+        this.content = content;
+        this.locationList = locationList;
+        this.imageList = imageList;
+        this.tagList = tagList;
+        for (PostCategory postCategory : postCategoryList) {
+            postCategory.setPost(this);
+        }
+        setMember(member);
+    }
 
     // 연관관계 메소드
 
@@ -72,11 +86,4 @@ public class Post extends BaseEntity {
         member.getPostList().add(this);
     }
 
-
-    @Builder
-    public Post(String title, String content, Member member){
-        this.title = title;
-        this.content = content;
-        setMember(member);
-    }
 }

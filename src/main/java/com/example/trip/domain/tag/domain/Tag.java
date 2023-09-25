@@ -3,7 +3,9 @@ package com.example.trip.domain.tag.domain;
 import com.example.trip.domain.BaseEntity;
 import com.example.trip.domain.post.domain.Post;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 테그 엔티티
@@ -12,6 +14,7 @@ import lombok.Getter;
  */
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Tag extends BaseEntity {
 
     @Id
@@ -26,6 +29,9 @@ public class Tag extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;  // 테그가 달릴 게시물
 
+    public Tag(String name) {
+        this.name = name;
+    }
 
     // 연관관계 메소드
     public void setPost(Post post){
