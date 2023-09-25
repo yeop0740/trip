@@ -3,6 +3,7 @@ package com.example.trip.domain.post.service;
 import com.example.trip.domain.category.CategoryRepository;
 import com.example.trip.domain.category.domain.Category;
 import com.example.trip.domain.member.MemberRepository;
+import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.post.PostRepository;
 import com.example.trip.domain.post.domain.CreatePostRequest;
 import com.example.trip.domain.post.domain.Post;
@@ -63,8 +64,10 @@ class PostServiceTest {
                         .tagList(List.of("tag1", "tag2"))
                         .build();
 
+                Member user = memberRepository.findByNickname("user");
+
                 // when
-                Long postId = postService.createPost("user", request);
+                Long postId = postService.createPost(user.getId(), request);
                 Post findOne = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("NO ENTITY"));
 
                 // then
@@ -96,8 +99,10 @@ class PostServiceTest {
                         .tagList(List.of("tag1", "tag2"))
                         .build();
 
+                Member user = memberRepository.findByNickname("user");
+
                 // when
-                Long postId = postService.createPost("user", request);
+                Long postId = postService.createPost(user.getId(), request);
 
                 // then
                 Assertions.assertThatThrownBy(() -> postRepository.findById(postId + 2).orElseThrow(RuntimeException::new))

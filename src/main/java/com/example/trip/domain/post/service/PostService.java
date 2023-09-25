@@ -11,6 +11,7 @@ import com.example.trip.domain.post.PostRepository;
 import com.example.trip.domain.post.domain.CreatePostRequest;
 import com.example.trip.domain.post.domain.Post;
 import com.example.trip.domain.post.domain.PostCategory;
+import com.example.trip.domain.post.domain.PostDetailsDto;
 import com.example.trip.domain.tag.domain.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -55,4 +56,8 @@ public class PostService {
         return post.getId();
     }
 
+    public PostDetailsDto readPostDetails(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("엔티티가 존재하지 않습니다."));
+        return PostDetailsDto.of(post);
+    }
 }
