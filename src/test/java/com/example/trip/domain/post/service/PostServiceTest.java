@@ -7,6 +7,7 @@ import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.post.PostRepository;
 import com.example.trip.domain.post.domain.CreatePostRequest;
 import com.example.trip.domain.post.domain.Post;
+import com.example.trip.domain.post.domain.PostDetailsDto;
 import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Nested;
@@ -69,9 +70,13 @@ class PostServiceTest {
                 // when
                 Long postId = postService.createPost(user.getId(), request);
                 Post findOne = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("NO ENTITY"));
+                PostDetailsDto postDetails = postService.readPostDetails(postId);
 
                 // then
                 Assertions.assertThat(findOne.getId()).isEqualTo(postId);
+                Assertions.assertThat(findOne.getId()).isEqualTo(postDetails.getId());
+                Assertions.assertThat(findOne.getTitle()).isEqualTo(postDetails.getTitle());
+                Assertions.assertThat(findOne.getContent()).isEqualTo(postDetails.getContent());
 
             }
         }
@@ -103,6 +108,7 @@ class PostServiceTest {
 
                 // when
                 Long postId = postService.createPost(user.getId(), request);
+                PostDetailsDto postDetails = postService.readPostDetails(postId);
 
                 // then
                 Assertions.assertThatThrownBy(() -> postRepository.findById(postId + 2).orElseThrow(RuntimeException::new))
