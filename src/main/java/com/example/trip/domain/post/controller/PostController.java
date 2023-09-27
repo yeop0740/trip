@@ -4,6 +4,7 @@ import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.post.domain.CreatePostRequest;
 import com.example.trip.domain.post.domain.CreatePostResponse;
 import com.example.trip.domain.post.domain.PostDetailsDto;
+import com.example.trip.domain.post.domain.ReadPostsDto;
 import com.example.trip.domain.post.service.PostService;
 import com.example.trip.global.annotation.Login;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,11 @@ public class PostController {
     @ResponseStatus(value = HttpStatus.OK)
     public PostDetailsDto readPostDetails(@PathVariable Long postId) {
         return postService.readPostDetails(postId);
+    }
+
+    @GetMapping
+    public ReadPostsDto readPosts(@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize) {
+        return postService.readPosts(pageNumber, pageSize);
     }
 
 }

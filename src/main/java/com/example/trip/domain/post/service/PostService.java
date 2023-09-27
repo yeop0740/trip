@@ -8,12 +8,13 @@ import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.member.location.LocationRepository;
 import com.example.trip.domain.member.location.domain.Location;
 import com.example.trip.domain.post.PostRepository;
-import com.example.trip.domain.post.domain.CreatePostRequest;
-import com.example.trip.domain.post.domain.Post;
-import com.example.trip.domain.post.domain.PostCategory;
-import com.example.trip.domain.post.domain.PostDetailsDto;
+import com.example.trip.domain.post.domain.*;
 import com.example.trip.domain.tag.domain.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,4 +61,12 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("엔티티가 존재하지 않습니다."));
         return PostDetailsDto.of(post);
     }
+
+    public ReadPostsDto readPosts(int pageNumber, int pageSize) {
+        Sort sort = Sort.by("createdTime").descending();
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+        Page<Post> postList = postRepository.findAll(pageRequest);
+        return ReadPostsDto.of(postList);
+    }
+
 }
