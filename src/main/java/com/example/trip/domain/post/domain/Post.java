@@ -9,7 +9,9 @@ import com.example.trip.domain.member.location.domain.Location;
 import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.tag.domain.Tag;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Post extends BaseEntity {
 
     @Id
@@ -69,4 +72,11 @@ public class Post extends BaseEntity {
         member.getPostList().add(this);
     }
 
+
+    @Builder
+    public Post(String title, String content, Member member){
+        this.title = title;
+        this.content = content;
+        setMember(member);
+    }
 }

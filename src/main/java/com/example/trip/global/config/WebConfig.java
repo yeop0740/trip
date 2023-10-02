@@ -1,14 +1,18 @@
 package com.example.trip.global.config;
 
 import com.example.trip.global.LoginInterceptor;
+import com.example.trip.global.annotation.LoginMemberArgumentResolver;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 /**
  * 로그인 인터셉터가 체크할 도메인을 지정한다.
@@ -17,6 +21,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * 체크할 필요가 없는 경우 addInterceptors에서 설정하자
  *
  * @Validated 로 체크할 message source를 messages.~ 파일로 선택했다.
+ *
+ * 애노테이션을 추가했다면, 여기서 ArgumentResolver를 추가하자
  *
  */
 @Configuration
@@ -34,6 +40,16 @@ public class WebConfig implements WebMvcConfigurer {
                 .order(1)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/member/create", "/member/login");
+    }
+
+    /**
+     * 추가한 애노테이션을 처리하는 ArgumentResolver를 등록한다.
+     *
+     * @param resolvers initially an empty list
+     */
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new LoginMemberArgumentResolver());
     }
 
     /**

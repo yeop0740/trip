@@ -62,4 +62,15 @@ public class Member extends BaseEntity {
         this.imageUrl = imageUrl;
         this.status = false;    // 기본 값으로 false
     }
+
+    public void deleteMember(){
+        this.status = true;
+    }
+
+    public void updateMember(String userId, String password, String nickname, String imageUrl){
+        this.userId = userId;
+        this.password = password;
+        this.nickname = nickname;
+        this.imageUrl = imageUrl;
+    }
 }

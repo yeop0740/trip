@@ -6,6 +6,7 @@ import com.example.trip.global.exception.LoginInterceptorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -60,6 +61,16 @@ public class BaseControllerAdvice {
         return BaseResponse.builder()
                 .status(BAD_REQUEST)
                 .message("request Body의 필드 이름이 잘못되었습니다.")
+                .build();
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public BaseResponse httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex){
+        log.info("[Base Handler] HttpRequestMethodNotSupportedException={}", ex);
+        return BaseResponse.builder()
+                .status(BAD_REQUEST)
+                .message("Http method type 오류")
                 .build();
     }
 
