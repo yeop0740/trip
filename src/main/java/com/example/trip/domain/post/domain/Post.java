@@ -5,7 +5,7 @@ import com.example.trip.domain.BaseEntity;
 import com.example.trip.domain.comment.domain.Comment;
 import com.example.trip.domain.image.domain.Image;
 import com.example.trip.domain.interaction.domain.Interaction;
-import com.example.trip.domain.location.domain.Location;
+import com.example.trip.domain.member.location.domain.Location;
 import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.tag.domain.Tag;
 import jakarta.persistence.*;
