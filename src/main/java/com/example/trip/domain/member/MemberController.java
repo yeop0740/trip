@@ -2,7 +2,10 @@ package com.example.trip.domain.member;
 
 import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.member.dto.CreateMemberRequest;
+import com.example.trip.domain.member.dto.LoginMemberRequest;
 import com.example.trip.domain.member.exception.DuplicateException;
+import com.example.trip.domain.member.exception.EmptyUserException;
+import com.example.trip.domain.member.exception.PasswordMissException;
 import com.example.trip.global.BaseResponse;
 import com.example.trip.global.ErrorMapCreator;
 import com.example.trip.global.SessionConst;
@@ -21,6 +24,8 @@ import org.springframework.web.bind.annotation.*;
 import java.net.http.HttpRequest;
 import java.util.List;
 import java.util.Map;
+
+import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @RestController
@@ -61,9 +66,48 @@ public class MemberController {
         session.setAttribute(SessionConst.LOGIN_MEMBER, createdMember.getId());
 
         return BaseResponse.builder()
-                .status(HttpStatus.OK)
+                .status(OK)
                 .message("성공")
                 .build();
     }
+
+
+    /**
+     * 로그인 컨트롤러 메소드
+     *
+     * 아이디와 비밀번호 확인 후, 로그인 처리
+     * 즉, 세션 연결
+     *
+     * @param loginMemberRequest
+     * @param bindingResult
+     * @param httpServletRequest
+     * @return
+     */
+    @PostMapping("/login")
+    public BaseResponse loginMember(@Validated @RequestBody LoginMemberRequest loginMemberRequest,
+                                    BindingResult bindingResult,
+                                    HttpServletRequest httpServletRequest) throws RequestFieldException, EmptyUserException, PasswordMissException {
+
+        // 필드 오류 체크
+        if(bindingResult.hasErrors()){
+            Map<String, String> errorMap = ErrorMapCreator.fieldErrorToMap(bindingResult.getFieldErrors());
+            throw new RequestFieldException(errorMap);
+        }
+
+        // 아이디, 비밀번호를 서비스 단에서 확인
+        Member member = memberService.loginMember(loginMemberRequest);
+
+        // 세션 생성
+        HttpSession session = httpServletRequest.getSession();
+        session.setAttribute(SessionConst.LOGIN_MEMBER, member.getId());
+
+        return BaseResponse.builder()
+                .status(OK)
+                .message("성공")
+                .build();
+    }
+
+
+
 
 }

@@ -2,7 +2,10 @@ package com.example.trip.domain.member;
 
 import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.member.dto.CreateMemberRequest;
+import com.example.trip.domain.member.dto.LoginMemberRequest;
 import com.example.trip.domain.member.exception.DuplicateException;
+import com.example.trip.domain.member.exception.EmptyUserException;
+import com.example.trip.domain.member.exception.PasswordMissException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -48,6 +51,12 @@ public class MemberService {
         return member;
     }
 
+    /**
+     * 유저 아이디, 이메일을 체크해서 중복이 있으면 예외를 날리는 메소드
+     *
+     * @param request
+     * @throws DuplicateException
+     */
     private void duplicateIdAndNicknameCheck(CreateMemberRequest request) throws DuplicateException {
         Map<String, String> errorMap = new HashMap<>();
 
@@ -64,5 +73,31 @@ public class MemberService {
         if(!errorMap.isEmpty()){
             throw new DuplicateException(errorMap);
         }
+    }
+
+
+    /**
+     * 로그인 수행을 위해 해당 계정이 존재하는 계정인지 체크
+     *
+     * @param loginMemberRequest
+     * @return
+     */
+    public Member loginMember(LoginMemberRequest loginMemberRequest) throws PasswordMissException, EmptyUserException {
+
+        Member member = memberRepository.findByUserId(loginMemberRequest.getUserId());
+
+        // 해당 id가 존재하지 않을 경우 체크
+        if(member == null){
+            throw new EmptyUserException(new HashMap<String, String>().put("userId", loginMemberRequest.getUserId()));
+        }
+
+        // 비밀번호가 일치하지 않을 경우 체크
+        boolean matches = passwordEncoder.matches(loginMemberRequest.getPassword(), member.getPassword());
+
+        if(!matches){
+            throw new PasswordMissException("비밀번호가 일치하지 않습니다.");
+        }
+
+        return member;
     }
 }
