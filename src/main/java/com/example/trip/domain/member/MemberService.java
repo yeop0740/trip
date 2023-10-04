@@ -1,10 +1,7 @@
 package com.example.trip.domain.member;
 
 import com.example.trip.domain.member.domain.Member;
-import com.example.trip.domain.member.dto.CreateMemberRequest;
-import com.example.trip.domain.member.dto.GetMemberInfoResponse;
-import com.example.trip.domain.member.dto.LoginMemberRequest;
-import com.example.trip.domain.member.dto.UpdateMemberRequest;
+import com.example.trip.domain.member.dto.*;
 import com.example.trip.domain.member.exception.DuplicateException;
 import com.example.trip.domain.member.exception.EmptyUserException;
 import com.example.trip.domain.member.exception.FireMemberException;
@@ -14,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -171,4 +169,33 @@ public class MemberService {
 
         memberRepository.save(member);
     }
+
+
+    /**
+     * 회원 검색 시 사용 될 검색 메서드
+     *
+     * 단순하게 검색어가 정확하게 포함되어 있는지만 확인한다.
+     * @param search
+     * @return
+     */
+    public List<GetSearchMemberInfo> searchMember(String search){
+
+        List<GetSearchMemberInfo> memberList = new ArrayList<>();
+
+        String searchPlus = "%" + search + "%";
+
+        List<Member> findMembers = memberRepository.findByNicknameLike(searchPlus);
+
+        for (Member findMember : findMembers) {
+            
+            memberList.add(GetSearchMemberInfo.builder()
+                            .nickname(findMember.getNickname())
+                            .imgUrl(findMember.getImageUrl())
+                            .build());
+        }
+
+        return memberList;
+    }
+
+
 }

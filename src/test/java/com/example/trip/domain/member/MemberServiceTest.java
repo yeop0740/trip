@@ -261,6 +261,14 @@ class MemberServiceTest {
                 .build();
 
         memberService.updateMember(member, request);
+    }
+
+
+    @Test
+    @DisplayName("회원 검색 테스트")
+    void searchMember(){
+
+        org.assertj.core.api.Assertions.assertThat(memberService.searchMember("test").isEmpty()).isFalse();
 
 
     }
