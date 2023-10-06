@@ -6,7 +6,9 @@ import com.example.trip.domain.comment.domain.Comment;
 import com.example.trip.domain.interaction.domain.Interaction;
 import com.example.trip.domain.post.domain.Post;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Member extends BaseEntity {
 
     @Id
@@ -50,4 +53,24 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<Comment> commentList = new ArrayList<>();  // 댓글 리스트
 
+
+    @Builder
+    public Member(String nickname, String userId, String password, String imageUrl) {
+        this.nickname = nickname;
+        this.userId = userId;
+        this.password = password;
+        this.imageUrl = imageUrl;
+        this.status = false;    // 기본 값으로 false
+    }
+
+    public void deleteMember(){
+        this.status = true;
+    }
+
+    public void updateMember(String userId, String password, String nickname, String imageUrl){
+        this.userId = userId;
+        this.password = password;
+        this.nickname = nickname;
+        this.imageUrl = imageUrl;
+    }
 }

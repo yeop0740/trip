@@ -4,7 +4,9 @@ import com.example.trip.domain.BaseEntity;
 import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.post.domain.Post;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 상호작용 엔티티
@@ -13,6 +15,7 @@ import lombok.Getter;
  */
 @Entity
 @Getter
+@NoArgsConstructor
 public class Interaction extends BaseEntity {
 
     @Id
@@ -42,6 +45,14 @@ public class Interaction extends BaseEntity {
     public void setPost(Post post){
         this.post = post;
         post.getInteractionList().add(this);
+    }
+
+
+    @Builder
+    public Interaction(InteractionType type, Member member, Post post){
+        this.type = type;
+        setMember(member);
+        setPost(post);
     }
 
 }

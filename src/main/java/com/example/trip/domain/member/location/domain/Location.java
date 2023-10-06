@@ -1,4 +1,4 @@
-package com.example.trip.domain.location.domain;
+package com.example.trip.domain.member.location.domain;
 
 import com.example.trip.domain.BaseEntity;
 import com.example.trip.domain.post.domain.Post;
