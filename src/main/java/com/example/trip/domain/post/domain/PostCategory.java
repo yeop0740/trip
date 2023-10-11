@@ -13,6 +13,7 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = {"post"})
 public class PostCategory extends BaseEntity {
 
     @Id
@@ -41,5 +42,10 @@ public class PostCategory extends BaseEntity {
     public void setCategory(Category category){
         this.category = category;
         category.getPostCategoryList().add(this);
+    }
+
+    public void clear() {
+        post.getPostCategoryList().remove(this);
+        this.post = null;
     }
 }

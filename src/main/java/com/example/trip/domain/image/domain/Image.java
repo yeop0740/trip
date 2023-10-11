@@ -32,4 +32,10 @@ public class Image extends BaseEntity {
         this.post = post;
         post.getImageList().add(this);
     }
+
+    public void clear() {
+        post.getImageList().remove(this);
+        this.post = null;
+    }
+
 }

@@ -1,10 +1,7 @@
 package com.example.trip.domain.post.controller;
 
 import com.example.trip.domain.member.domain.Member;
-import com.example.trip.domain.post.domain.CreatePostRequest;
-import com.example.trip.domain.post.domain.CreatePostResponse;
-import com.example.trip.domain.post.domain.PostDetailsDto;
-import com.example.trip.domain.post.domain.ReadPostsDto;
+import com.example.trip.domain.post.domain.*;
 import com.example.trip.domain.post.service.PostService;
 import com.example.trip.global.annotation.Login;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +31,13 @@ public class PostController {
     @GetMapping
     public ReadPostsDto readPosts(@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize) {
         return postService.readPosts(pageNumber, pageSize);
+    }
+
+    @PutMapping
+    @ResponseStatus(value = HttpStatus.OK)
+    public UpdatePostResponse updatePost(@Login Member member, @RequestBody UpdatePostRequest request) {
+        Long postId = postService.updatePost(member.getId(), request);
+        return UpdatePostResponse.of(postId);
     }
 
 }

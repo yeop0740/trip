@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * 테그 엔티티
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = {"post"})
 public class Tag extends BaseEntity {
 
     @Id
@@ -38,4 +40,10 @@ public class Tag extends BaseEntity {
         this.post = post;
         post.getTagList().add(this);
     }
+
+    public void clear() {
+        post.getTagList().remove(this);
+        this.post = null;
+    }
+
 }

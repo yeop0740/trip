@@ -10,8 +10,6 @@ import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.tag.domain.Tag;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +23,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class Post extends BaseEntity {
 
     @Id
@@ -42,11 +41,10 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;  // 게시물 작성자
 
-    @Cascade(CascadeType.ALL)
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostCategory> postCategoryList = new ArrayList<>();    // 게시물에 대한 카테고리 모음 리스트
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Location> locationList = new ArrayList<>();    // 게시물에 대한 위치 정보 리스트
 
     @OneToMany(mappedBy = "post")
@@ -58,17 +56,22 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post")
     private List<Interaction> interactionList = new ArrayList<>();  // 게시물에 엮인 상호작용 내역 리스트
 
-    @Cascade(CascadeType.ALL)
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tag> tagList = new ArrayList<>();  // 게시물에 대한 태그 리스트
 
     @Builder
     public Post(String title, String content, Member member, List<PostCategory> postCategoryList, List<Location> locationList, List<Image> imageList, List<Tag> tagList) {
         this.title = title;
         this.content = content;
-        this.locationList = locationList;
-        this.imageList = imageList;
-        this.tagList = tagList;
+        for (Location location : locationList) {
+            location.setPost(this);
+        }
+        for (Image image : imageList) {
+            image.setPost(this);
+        }
+        for (Tag tag : tagList) {
+            tag.setPost(this);
+        }
         for (PostCategory postCategory : postCategoryList) {
             postCategory.setPost(this);
         }
@@ -86,4 +89,32 @@ public class Post extends BaseEntity {
         member.getPostList().add(this);
     }
 
+    public void change(String title, String content, List<PostCategory> postCategoryList, List<Location> locationList, List<Image> imageList, List<Tag> tagList) {
+        this.title = title;
+        this.content = content;
+        for (int i = this.locationList.size() - 1; i >= 0; i--) {
+            this.locationList.get(i).clear();
+        }
+        for (Location location : locationList) {
+            location.setPost(this);
+        }
+        for (int i = this.imageList.size() - 1; i >= 0; i--) {
+            this.imageList.get(i).clear();
+        }
+        for (Image image : imageList) {
+            image.setPost(this);
+        }
+        for (int i = this.postCategoryList.size() - 1; i >= 0; i--) {
+            this.postCategoryList.get(i).clear();
+        }
+        for (PostCategory postCategory : postCategoryList) {
+            postCategory.setPost(this);
+        }
+        for (int i = this.tagList.size() - 1; i >= 0; i--) {
+            this.tagList.get(i).clear();
+        }
+        for (Tag tag : tagList) {
+            tag.setPost(this);
+        }
+    }
 }

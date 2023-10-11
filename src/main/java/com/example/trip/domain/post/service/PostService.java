@@ -13,7 +13,6 @@ import com.example.trip.domain.tag.domain.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +29,7 @@ public class PostService {
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
     private final ImageRepository imageRepository;
+//    private final PostCategoryRepository
 
     public Long createPost(Long userId, CreatePostRequest request) {
         Member member = memberRepository.findById(userId).orElseThrow(RuntimeException::new);
@@ -67,6 +67,33 @@ public class PostService {
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
         Page<Post> postList = postRepository.findAll(pageRequest);
         return ReadPostsDto.of(postList);
+    }
+
+    public Long updatePost(Long userId, UpdatePostRequest request) {
+        Member member = memberRepository.findById(userId).orElseThrow(() -> new RuntimeException("엔티티가 존재하지 않습니다."));
+        Post post = postRepository.findById(request.getId()).orElseThrow(() -> new RuntimeException("엔티티가 존재하지 않습니다."));
+        List<Location> locationList = locationRepository.findAllById(request.getLocationList());
+        List<Image> imageList = imageRepository.findAllById(request.getImageList());
+        List<PostCategory> postCategoryList = categoryRepository.findAllById(
+                request.getCategoryList()).stream()
+                .map(PostCategory::new)
+                .toList();
+//        postCategoryRepository.save()
+        List<Tag> tagList = request.getTagList().stream()
+                .map(Tag::new)
+                .toList();
+
+        if (!isValid(post, member)) {
+            throw new RuntimeException("허용되지 않는 요청입니다.");
+        }
+
+        post.change(request.getTitle(), request.getContent(), postCategoryList, locationList, imageList, tagList);
+
+        return post.getId();
+    }
+
+    private boolean isValid(Post post, Member member) {
+        return post.getMember().equals(member);
     }
 
 }
