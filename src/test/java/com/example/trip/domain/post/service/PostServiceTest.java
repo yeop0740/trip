@@ -2,6 +2,7 @@ package com.example.trip.domain.post.service;
 
 import com.example.trip.domain.category.CategoryRepository;
 import com.example.trip.domain.category.domain.Category;
+import com.example.trip.domain.image.ImageRepository;
 import com.example.trip.domain.image.domain.Image;
 import com.example.trip.domain.member.MemberRepository;
 import com.example.trip.domain.member.domain.Member;
@@ -46,6 +47,10 @@ class PostServiceTest {
 
     @Autowired
     LocationRepository locationRepository;
+
+    @Autowired
+    ImageRepository imageRepository;
+
 
     @Nested
     class 게시물서비스에서_게시물을_저장한_뒤 {
@@ -247,6 +252,68 @@ class PostServiceTest {
             @Test
             public void 예외가_발생한다() throws Exception {
             }
+        }
+        
+        @Nested
+        class 작성자가_삭제를_요청한_경우 {
+            
+            @Test
+            public void 관련_데이터가_모두_삭제된다() throws Exception {
+                // given
+                Location location1 = new Location(new BigDecimal(10), new BigDecimal(20), "서울 동작구 상도로 369", "123-4567", true);
+                Location location2 = new Location(new BigDecimal(11), new BigDecimal(21), "서울 동작구 상도로 369", "123-4567", true);
+                Location location3 = new Location(new BigDecimal(12), new BigDecimal(22), "서울 동작구 상도로 369", "123-4567", true);
+                Location location4 = new Location(new BigDecimal(13), new BigDecimal(23), "서울 동작구 상도로 369", "123-4567", true);
+                Location location5 = new Location(new BigDecimal(14), new BigDecimal(24), "서울 동작구 상도로 369", "123-4567", true);
+
+                locationRepository.saveAll(List.of(location1, location2, location3, location4, location5));
+                List<Long> locationIds = List.of(location1.getId(), location2.getId(), location3.getId(), location4.getId(), location5.getId());
+
+                Category category1 = new Category("category1");
+                Category category2 = new Category("category2");
+                Category category3 = new Category("category3");
+
+                categoryRepository.saveAll(List.of(category1, category2, category3));
+
+                Image image1 = new Image("https://www.naver.com");
+                Image image2 = new Image("https://www.naver.com");
+
+                imageRepository.saveAll(List.of(image1, image2));
+                List<Long> imageIds = List.of(image1.getId(), image2.getId());
+
+                CreatePostRequest request1 = CreatePostRequest.builder()
+                        .title("test title1")
+                        .content("test content1")
+                        .locationList(List.of(location1.getId(), location2.getId(), location3.getId(), location4.getId(), location5.getId()))
+                        .categoryList(List.of(category1.getId(), category2.getId(), category3.getId()))
+                        .imageList(List.of(image1.getId(), image2.getId()))
+                        .tagList(List.of("tag1", "tag2"))
+                        .build();
+
+                Long postId1 = postService.createPost("user", request1);
+                Post post = postRepository.findById(postId1).orElseThrow(() -> new RuntimeException(""));
+                List<Long> postCategoryIds = post.getPostCategoryList().stream()
+                        .map(PostCategory::getId)
+                        .collect(Collectors.toList());
+
+                // when
+                postService.deletePost("user", postId1);
+
+                // then
+                Assertions.assertThatThrownBy(() -> postRepository.findById(postId1).orElseThrow(() -> new RuntimeException("존재하지 않는 엔티티")))
+                        .isInstanceOf(RuntimeException.class);
+
+                Assertions.assertThat(locationRepository.findAllById(locationIds)).hasSize(0);
+                Assertions.assertThat(em.createQuery("select pc from PostCategory pc" +
+                        " where pc.category.id in :postCategoryIds", PostCategory.class)
+                        .setParameter("postCategoryIds", postCategoryIds)
+                        .getResultList()).hasSize(0);
+                Assertions.assertThat(imageRepository.findAllById(imageIds)).hasSize(0);
+
+
+                
+            }
+                 
         }
     }
 
