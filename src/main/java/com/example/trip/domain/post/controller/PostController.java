@@ -40,4 +40,10 @@ public class PostController {
         return UpdatePostResponse.of(postId);
     }
 
+    @DeleteMapping("/{postId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deletePost(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long postId) {
+        postService.deletePost(userDetails.getUsername(), postId);
+    }
+
 }
