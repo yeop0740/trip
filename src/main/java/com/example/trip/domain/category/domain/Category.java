@@ -3,7 +3,10 @@ package com.example.trip.domain.category.domain;
 import com.example.trip.domain.BaseEntity;
 import com.example.trip.domain.post.domain.PostCategory;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +19,8 @@ import java.util.List;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = {"postCategoryList"})
 public class Category extends BaseEntity {
 
     @Id
@@ -28,4 +33,8 @@ public class Category extends BaseEntity {
 
     @OneToMany(mappedBy = "category")
     private List<PostCategory> postCategoryList = new ArrayList<>();    // 카테고리 모음에 대한 리스트
+
+    public Category(String name) {
+        this.name = name;
+    }
 }

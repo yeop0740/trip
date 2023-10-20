@@ -3,7 +3,9 @@ package com.example.trip.domain.image.domain;
 import com.example.trip.domain.BaseEntity;
 import com.example.trip.domain.post.domain.Post;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 이미지 엔티티
@@ -12,6 +14,7 @@ import lombok.Getter;
  */
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Image extends BaseEntity {
 
     @Id
@@ -31,5 +34,14 @@ public class Image extends BaseEntity {
     public void setPost(Post post){
         this.post = post;
         post.getImageList().add(this);
+    }
+
+    public void clear() {
+        post.getImageList().remove(this);
+        this.post = null;
+    }
+
+    public Image(String imageurl) {
+        this.imageurl = imageurl;
     }
 }

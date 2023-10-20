@@ -6,9 +6,7 @@ import com.example.trip.domain.comment.domain.Comment;
 import com.example.trip.domain.interaction.domain.Interaction;
 import com.example.trip.domain.post.domain.Post;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +19,9 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
 
     @Id
@@ -73,4 +73,5 @@ public class Member extends BaseEntity {
         this.nickname = nickname;
         this.imageUrl = imageUrl;
     }
+
 }

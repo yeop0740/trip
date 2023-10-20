@@ -3,7 +3,7 @@ package com.example.trip.domain.member.location.domain;
 import com.example.trip.domain.BaseEntity;
 import com.example.trip.domain.post.domain.Post;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -17,6 +17,8 @@ import java.math.BigDecimal;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = {"post"})
 public class Location extends BaseEntity {
 
     @Id
@@ -43,10 +45,24 @@ public class Location extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;  // 어떤 게시물에 소속될 위치정보인지
 
+    @Builder
+    public Location(BigDecimal latitude, BigDecimal longitude, String address, String telephone, Boolean status) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.address = address;
+        this.telephone = telephone;
+        this.status = status;
+    }
 
     // 연관관계 메소드
     public void setPost(Post post){
         this.post = post;
         post.getLocationList().add(this);
     }
+
+    public void clear() {
+        post.getLocationList().remove(this);
+        this.post = null;
+    }
+
 }
