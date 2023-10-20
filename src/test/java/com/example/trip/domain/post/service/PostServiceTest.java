@@ -290,14 +290,15 @@ class PostServiceTest {
                         .tagList(List.of("tag1", "tag2"))
                         .build();
 
-                Long postId1 = postService.createPost("user", request1);
+                Member user = memberRepository.findByNickname("user");
+                Long postId1 = postService.createPost(user.getId(), request1);
                 Post post = postRepository.findById(postId1).orElseThrow(() -> new RuntimeException(""));
                 List<Long> postCategoryIds = post.getPostCategoryList().stream()
                         .map(PostCategory::getId)
                         .collect(Collectors.toList());
 
                 // when
-                postService.deletePost("user", postId1);
+                postService.deletePost(user.getId(), postId1);
 
                 // then
                 Assertions.assertThatThrownBy(() -> postRepository.findById(postId1).orElseThrow(() -> new RuntimeException("존재하지 않는 엔티티")))

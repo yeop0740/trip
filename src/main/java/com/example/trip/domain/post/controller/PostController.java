@@ -42,8 +42,8 @@ public class PostController {
 
     @DeleteMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deletePost(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long postId) {
-        postService.deletePost(userDetails.getUsername(), postId);
+    public void deletePost(@Login Member member, @PathVariable Long postId) {
+        postService.deletePost(member.getId(), postId);
     }
 
 }

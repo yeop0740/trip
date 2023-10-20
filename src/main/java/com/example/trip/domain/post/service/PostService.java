@@ -92,8 +92,8 @@ public class PostService {
         return post.getId();
     }
 
-    public void deletePost(String username, Long postId) {
-        Member member = memberRepository.findByUserId(username).orElseThrow(() -> new RuntimeException("엔티티가 존재하지 않습니다."));
+    public void deletePost(Long userId, Long postId) {
+        Member member = memberRepository.findById(userId).orElseThrow(() -> new RuntimeException("엔티티가 존재하지 않습니다."));
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("엔티티가 존재하지 않습니다."));
 
         if (!isValid(post, member)) {
