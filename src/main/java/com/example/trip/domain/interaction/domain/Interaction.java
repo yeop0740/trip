@@ -55,4 +55,9 @@ public class Interaction extends BaseEntity {
         setPost(post);
     }
 
+    public void delete() {
+        this.member = null;
+        this.post = null;
+    }
+
 }

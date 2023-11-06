@@ -74,4 +74,9 @@ public class Member extends BaseEntity {
         this.imageUrl = imageUrl;
     }
 
+    public void delete(Interaction interaction) {
+        this.interactionList.remove(interaction);
+        interaction.delete();
+    }
+
 }

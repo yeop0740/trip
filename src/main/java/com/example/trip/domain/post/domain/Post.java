@@ -117,4 +117,10 @@ public class Post extends BaseEntity {
             tag.setPost(this);
         }
     }
+
+    public void delete(Interaction interaction) {
+        this.interactionList.remove(interaction);
+        interaction.delete();
+    }
+
 }
