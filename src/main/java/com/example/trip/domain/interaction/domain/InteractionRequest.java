@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateInteractionRequest {
+public class InteractionRequest {
 
     private Long postId;
     private InteractionType type;
