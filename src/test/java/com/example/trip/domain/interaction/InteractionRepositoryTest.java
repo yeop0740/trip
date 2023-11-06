@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,5 +66,24 @@ class InteractionRepositoryTest {
                     );
         }
     }
+
+    @Test
+    public void 인터랙션_삭제_테스트() throws Exception {
+        // given
+        Member member = new Member("david", "david", "1234", "www.naver.com");
+        memberRepository.save(member);
+        Post post = new Post("title", "content", member, List.of(), List.of(), List.of(), List.of());
+        postRepository.save(post);
+        Interaction likeInteraction = new Interaction(InteractionType.LIKE, member, post);
+        interactionRepository.save(likeInteraction);
+        Long likeExpectedId = likeInteraction.getId();
+
+        // when
+        interactionRepository.delete(likeInteraction);
+
+        // then
+        Assertions.assertThat(interactionRepository.findById(likeExpectedId)).isEqualTo(Optional.empty());
+    }
+
 
 }
