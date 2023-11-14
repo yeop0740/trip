@@ -3,6 +3,7 @@ package com.example.trip.domain.post.controller;
 import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.post.domain.*;
 import com.example.trip.domain.post.service.PostService;
+import com.example.trip.global.BaseResponse;
 import com.example.trip.global.annotation.Login;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,34 +17,33 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public CreatePostResponse createPost(@Login Member member, @RequestBody CreatePostRequest request) {
+    public BaseResponse<Long>  createPost(@Login Member member, @RequestBody CreatePostRequest request) {
         Long postId = postService.createPost(member.getId(), request);
-        return CreatePostResponse.of(postId);
+        return new BaseResponse<>(HttpStatus.CREATED, postId);
     }
 
     @GetMapping("details/{postId}")
-    @ResponseStatus(value = HttpStatus.OK)
-    public PostDetailsDto readPostDetails(@PathVariable Long postId) {
-        return postService.readPostDetails(postId);
+    public BaseResponse<PostDetailsDto> readPostDetails(@PathVariable Long postId) {
+        PostDetailsDto postDetails = postService.readPostDetails(postId);
+        return new BaseResponse<>(postDetails);
     }
 
     @GetMapping
-    public ReadPostsDto readPosts(@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize) {
-        return postService.readPosts(pageNumber, pageSize);
+    public BaseResponse<ReadPostsDto> readPosts(@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize) {
+        ReadPostsDto posts = postService.readPosts(pageNumber, pageSize);
+        return new BaseResponse<>(posts);
     }
 
     @PutMapping
-    @ResponseStatus(value = HttpStatus.OK)
-    public UpdatePostResponse updatePost(@Login Member member, @RequestBody UpdatePostRequest request) {
+    public BaseResponse<Long> updatePost(@Login Member member, @RequestBody UpdatePostRequest request) {
         Long postId = postService.updatePost(member.getId(), request);
-        return UpdatePostResponse.of(postId);
+        return new BaseResponse<>(postId);
     }
 
     @DeleteMapping("/{postId}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deletePost(@Login Member member, @PathVariable Long postId) {
+    public BaseResponse<Void> deletePost(@Login Member member, @PathVariable Long postId) {
         postService.deletePost(member.getId(), postId);
+        return new BaseResponse<>();
     }
 
 }
