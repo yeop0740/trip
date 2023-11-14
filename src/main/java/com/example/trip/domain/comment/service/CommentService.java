@@ -28,4 +28,13 @@ public class CommentService {
         return post.getId();
     }
 
+    public void deleteComment(Member member, Long commentId) {
+        Member findMember = memberRepository.findById(member.getId()).orElseThrow(RuntimeException::new);
+        Comment comment = commentRepository.findById(commentId).orElseThrow(RuntimeException::new);
+        if (!comment.getMember().equals(findMember)) {
+            throw new RuntimeException();
+        }
+        comment.setDeleted();
+    }
+
 }

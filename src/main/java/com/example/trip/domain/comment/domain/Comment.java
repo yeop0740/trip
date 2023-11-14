@@ -53,4 +53,9 @@ public class Comment extends BaseEntity {
         this.member = member;
         member.getCommentList().add(this);
     }
+
+    public void setDeleted() {
+        this.deleted = true;
+    }
+
 }

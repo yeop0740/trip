@@ -22,4 +22,10 @@ public class CommentController {
         return new BaseResponse<>(HttpStatus.CREATED, postId);
     }
 
+    @DeleteMapping("/{commentId}")
+    public BaseResponse<Void> deleteComment(@Login Member member, @PathVariable Long commentId) {
+        commentService.deleteComment(member, commentId);
+        return new BaseResponse<>();
+    }
+
 }
