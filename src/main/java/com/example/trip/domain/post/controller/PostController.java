@@ -17,7 +17,7 @@ public class PostController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public CreatePostResponse createPost(@Login Member member, CreatePostRequest request) {
+    public CreatePostResponse createPost(@Login Member member, @RequestBody CreatePostRequest request) {
         Long postId = postService.createPost(member.getId(), request);
         return CreatePostResponse.of(postId);
     }
