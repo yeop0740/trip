@@ -1,4 +1,4 @@
-package com.example.trip.domain.member.location.domain;
+package com.example.trip.domain.location.domain;
 
 import com.example.trip.domain.BaseEntity;
 import com.example.trip.domain.post.domain.Post;
@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * 위치 정보 엔티티
@@ -36,22 +37,31 @@ public class Location extends BaseEntity {
     private String address; // 주소
 
     @Column
-    private String telephone;   // 전화번호
+    private LocalDateTime startTime;    // 시작 시간
+    
+    @Column
+    private LocalDateTime endTime;      // 종료 시간
 
     @Column
-    private Boolean status; // 영업 상태
+    private boolean isImportant;    // 주요 지점
+
+    @ManyToOne
+    @JoinColumn(name = "location_path_id")
+    private LocationPath locationPath;  // 어떤 위치 정보모음에 속할 위치 정보인지
 
     @ManyToOne
     @JoinColumn(name = "post_id")
-    private Post post;  // 어떤 게시물에 소속될 위치정보인지
+    private Post post;
 
     @Builder
-    public Location(BigDecimal latitude, BigDecimal longitude, String address, String telephone, Boolean status) {
+    public Location(BigDecimal latitude, BigDecimal longitude, String address, LocalDateTime startTime, LocalDateTime endTime, boolean isImportant) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.address = address;
-        this.telephone = telephone;
-        this.status = status;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.isImportant = isImportant;
+
     }
 
     // 연관관계 메소드
@@ -60,9 +70,18 @@ public class Location extends BaseEntity {
         post.getLocationList().add(this);
     }
 
+    public void setLocationPath(LocationPath locationPath){
+        this.locationPath = locationPath;
+        locationPath.getLocationList().add(this);
+    }
+
     public void clear() {
         post.getLocationList().remove(this);
         this.post = null;
     }
 
+    public void updateLocation(String address, LocalDateTime endTime) {
+        this.address = address;
+        this.endTime = endTime;
+    }
 }
