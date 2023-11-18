@@ -4,7 +4,9 @@ import com.example.trip.domain.BaseEntity;
 import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.post.domain.Post;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  *  댓글 엔티티
@@ -14,6 +16,7 @@ import lombok.Getter;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
 
     @Id
@@ -32,6 +35,13 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;  // 댓글이 달린 게시물
 
+    private boolean deleted;
+
+    public Comment(String content, Member member, Post post) {
+        this.content = content;
+        setMember(member);
+        setPost(post);
+    }
 
     // 연관관계 메소드
     public void setPost(Post post){
@@ -43,4 +53,9 @@ public class Comment extends BaseEntity {
         this.member = member;
         member.getCommentList().add(this);
     }
+
+    public void setDeleted() {
+        this.deleted = true;
+    }
+
 }

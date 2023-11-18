@@ -16,6 +16,11 @@ public class CommentDto {
     private LocalDateTime createdTime;
 
     public static CommentDto of(Comment comment) {
+        if (comment.isDeleted()) {
+            return CommentDto.builder()
+                    .createdTime(comment.getCreatedTime())
+                    .build();
+        }
         return CommentDto.builder()
                 .id(comment.getId())
                 .member(MemberDto.of(comment.getMember()))
