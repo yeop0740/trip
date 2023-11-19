@@ -135,7 +135,7 @@ public class LocationService {
         return getLocationPathResponseList;
     }
 
-    public List<GetLocationResponse> getLocation(Member member, Long pathId) throws WrongMemberException {
+    public GetLocationInfoResponse getLocation(Member member, Long pathId) throws WrongMemberException {
 
         if(!locationPathRepository.existsByIdAndMember(pathId, member)){
             throw new WrongMemberException();
@@ -144,10 +144,10 @@ public class LocationService {
         LocationPath locationPath = locationPathRepository.findById(pathId).get();
         List<Location> locationList = locationRepository.findAllByLocationPath(locationPath);
 
-        List<GetLocationResponse> getLocationResponseList = new ArrayList<>();
+        List<LocationInfo> locationInfoList = new ArrayList<>();
 
         for (Location location : locationList) {
-            getLocationResponseList.add(GetLocationResponse.builder()
+            locationInfoList.add(LocationInfo.builder()
                             .id(location.getId())
                             .address(location.getAddress())
                             .latitude(location.getLatitude())
@@ -158,7 +158,8 @@ public class LocationService {
                             .build());
         }
 
-        return getLocationResponseList;
+
+        return new GetLocationInfoResponse(locationInfoList);
     }
 
     public void delLocationPath(Member member, Long pathId) throws WrongMemberException {

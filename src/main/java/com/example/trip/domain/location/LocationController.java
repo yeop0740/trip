@@ -1,6 +1,5 @@
 package com.example.trip.domain.location;
 
-import com.example.trip.domain.location.domain.LocationPath;
 import com.example.trip.domain.location.dto.*;
 import com.example.trip.domain.location.exception.DuplicateSaveException;
 import com.example.trip.domain.location.exception.EmptyLocationException;
@@ -11,6 +10,10 @@ import com.example.trip.domain.location.repository.LocationRepository;
 import com.example.trip.domain.member.domain.Member;
 import com.example.trip.global.BaseResponse;
 import com.example.trip.global.annotation.Login;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +29,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/location")
 @RequiredArgsConstructor
+@Tag(name = "Location", description = "위치 정보 관련 API")
 public class LocationController {
 
     private final LocationService locationService;
@@ -37,8 +41,10 @@ public class LocationController {
     /**
      * 회원의 여행 경로 목록 보기
      */
+    @Operation(summary = "여행 경로 모음 가져오기", description = "특정 회원의 여행 경로 모음들의 목록을 가져옵니다.")
     @GetMapping("/list")
-    public BaseResponse<List<GetLocationPathResponse>> getLocationPath(@Login Member member){
+    public BaseResponse<List<GetLocationPathResponse>> getLocationPath(
+            @Parameter(hidden = true) @Login Member member){
 
         List<GetLocationPathResponse> responseList = locationService.getLocationPath(member);
 
@@ -49,11 +55,13 @@ public class LocationController {
     /**
      * 회원의 특정 여행 경로 상세 보기
      */
+    @Operation(summary = "여행 경로 가져오기", description = "특정 여행 경로 모음의 여행 경로들을 가져옵니다.")
     @GetMapping("/list/{pathId}")
-    public BaseResponse<List<GetLocationResponse>> getLocation(@Login Member member,
-                                                               @PathVariable Long pathId) throws WrongMemberException {
+    public BaseResponse<GetLocationInfoResponse> getLocation(
+            @Parameter(hidden = true) @Login Member member,
+            @Parameter(description = "여행 경로 모음 번호(id)", in = ParameterIn.PATH) @PathVariable Long pathId) throws WrongMemberException {
 
-        List<GetLocationResponse> responseList = locationService.getLocation(member, pathId);
+        GetLocationInfoResponse responseList = locationService.getLocation(member, pathId);
 
         return new BaseResponse<>(responseList);
     }
@@ -61,11 +69,13 @@ public class LocationController {
     /**
      * 경로 삭제는 특정 여행 경로에서의 특정 지점을 삭제
      */
+    @Operation(summary = "특정 여행 경로들을 삭제", description = "특정 여행 경로들을 삭제할 수 있습니다.")
     @DeleteMapping("/list/{pathId}")
-    public BaseResponse deleteLocation(@Login Member member,
-                                       @PathVariable Long pathId,
-                                       @Validated @RequestBody DelLocationRequest delLocationRequest,
-                                       BindingResult bindingResult) throws WrongMemberException, WrongLocationIdException {
+    public BaseResponse deleteLocation(
+            @Parameter(hidden = true) @Login Member member,
+            @Parameter(description = "여행 경로 모음 번호(id)", in = ParameterIn.PATH) @PathVariable Long pathId,
+            @Validated @RequestBody DelLocationRequest delLocationRequest,
+            BindingResult bindingResult) throws WrongMemberException, WrongLocationIdException {
 
         locationService.delLocation(member, pathId, delLocationRequest);
 
@@ -75,9 +85,11 @@ public class LocationController {
     /**
      * 경로 모음 삭제는 특정 회원의 특정 경로 모음을 삭제
      */
+    @Operation(summary = "여행 경로 모음 삭제", description = "특정 회원의 여행 경로 모음을 삭제합니다.")
     @DeleteMapping("/{pathId}")
-    public BaseResponse deleteLocationPath(@Login Member member,
-                                           @PathVariable Long pathId) throws WrongMemberException {
+    public BaseResponse deleteLocationPath(
+            @Parameter(hidden = true) @Login Member member,
+            @Parameter(description = "여행 경로 모음 번호(id)", in = ParameterIn.PATH) @PathVariable Long pathId) throws WrongMemberException {
 
         locationService.delLocationPath(member, pathId);
 
@@ -93,10 +105,12 @@ public class LocationController {
      * 한 번에 여러 값들을 입력 받을 수 있어야 한다. (여러 Location Id와 주요 지점의 이름 정보)
      * 또한, 리스트에 하나의 Location Id 값만이 들어올 수도 있다.
      */
+    @Operation(summary = "특정 여행 경로들을 수정", description = "여행 경로들을 묶어서 주요 지점으로 설정 or 주요 지점의 이름을 변경합니다.")
     @PostMapping("/update")
-    public BaseResponse updateLocation(@Validated @RequestBody LocationUpdateRequest locationUpdateRequest,
-                                       BindingResult bindingResult,
-                                       @Login Member member) throws WrongMemberException, EmptyLocationException {
+    public BaseResponse updateLocation(
+            @Validated @RequestBody LocationUpdateRequest locationUpdateRequest,
+            BindingResult bindingResult,
+            @Parameter(hidden = true) @Login Member member) throws WrongMemberException, EmptyLocationException {
 
         if(locationUpdateRequest.getLocationUpdateDataList().size() == 0){
             throw new EmptyLocationException();
@@ -129,10 +143,12 @@ public class LocationController {
      *
      * 한 번에 넘어온 값은 하나의 여행 경로로서 간주한다.
      */
+    @Operation(summary = "여행 경로 저장", description = "위치 정보에 대한 리스트를 가지고 여행 경로를 생성합니다.")
     @PostMapping("/save")
-    public BaseResponse saveLocation(@Validated @RequestBody LocationSaveRequest locationSaveRequest,
-                                     BindingResult bindingResult,
-                                     @Login Member member) throws DuplicateSaveException {
+    public BaseResponse saveLocation(
+            @Validated @RequestBody LocationSaveRequest locationSaveRequest,
+            BindingResult bindingResult,
+            @Parameter(hidden = true) @Login Member member) throws DuplicateSaveException {
 
         if (locationRepository.existsByStartTimeAndMember(
                 locationSaveRequest.getLocationDataList().get(0).getLocalDateTime(), member)

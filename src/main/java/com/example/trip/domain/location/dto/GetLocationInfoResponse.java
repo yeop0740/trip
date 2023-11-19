@@ -12,9 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DelLocationRequest {
+public class GetLocationInfoResponse {
 
-    @Schema(description = "지역 정보 Id 리스트", defaultValue = "[1, 2, 3, 4, 5]")
-    private List<Long> locationIdList;
-
+    @Schema(description = "여행 경로 정보 리스트")
+    private List<LocationInfo> locationInfoList;
 }

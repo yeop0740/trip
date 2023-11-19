@@ -8,6 +8,7 @@ import com.example.trip.global.ErrorMapCreator;
 import com.example.trip.global.SessionConst;
 import com.example.trip.global.annotation.Login;
 import com.example.trip.global.exception.RequestFieldException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -29,6 +30,7 @@ import static org.springframework.http.HttpStatus.*;
 @RestController
 @RequestMapping("/member")
 @RequiredArgsConstructor
+@Tag(name = "Member", description = "회원 관련 API")
 public class MemberController {
 
     private final MemberService memberService;

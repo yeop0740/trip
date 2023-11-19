@@ -1,5 +1,6 @@
 package com.example.trip.domain.location.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,10 @@ import java.util.List;
 @NoArgsConstructor
 public class LocationSaveRequest {
 
+    @Schema(description = "여행 경로 이름")
     private String title;
+
+    @Schema(description = "여행 경로 정보에 대한 리스트")
     private List<LocationData> locationDataList;
 
 }
