@@ -6,7 +6,7 @@ import com.example.trip.domain.image.domain.Image;
 import com.example.trip.domain.interaction.domain.Interaction;
 import com.example.trip.domain.interaction.domain.InteractionType;
 import com.example.trip.domain.member.domain.MemberDto;
-import com.example.trip.domain.member.location.domain.LocationDto;
+import com.example.trip.domain.location.domain.LocationDto;
 import com.example.trip.domain.tag.domain.Tag;
 import lombok.Builder;
 import lombok.Data;

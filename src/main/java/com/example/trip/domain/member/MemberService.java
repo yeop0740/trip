@@ -49,6 +49,8 @@ public class MemberService {
                         .imageUrl(request.getImgUrl())
                         .build();
 
+        System.out.println("member의 status: " + member.getStatus());
+
         // 멤버 저장
         memberRepository.save(member);
 

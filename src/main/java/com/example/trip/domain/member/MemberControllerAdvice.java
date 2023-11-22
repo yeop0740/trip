@@ -1,6 +1,7 @@
 package com.example.trip.domain.member;
 
 import com.example.trip.domain.member.exception.DuplicateException;
+import com.example.trip.domain.member.exception.EmptyUserException;
 import com.example.trip.domain.member.exception.FireMemberException;
 import com.example.trip.global.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,16 @@ public class MemberControllerAdvice {
         return BaseResponse.builder()
                 .status(BAD_REQUEST)
                 .message("탈퇴된 회원입니다.")
+                .build();
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(EmptyUserException.class)
+    public BaseResponse emptyMemberExHandle(EmptyUserException ex){
+        log.error("[Member Handle] FireMemberException", ex);
+        return BaseResponse.builder()
+                .status(BAD_REQUEST)
+                .message("해당 회원은 존재하지 않습니다.")
                 .build();
     }
 

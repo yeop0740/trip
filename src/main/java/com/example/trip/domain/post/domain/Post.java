@@ -5,7 +5,8 @@ import com.example.trip.domain.BaseEntity;
 import com.example.trip.domain.comment.domain.Comment;
 import com.example.trip.domain.image.domain.Image;
 import com.example.trip.domain.interaction.domain.Interaction;
-import com.example.trip.domain.member.location.domain.Location;
+import com.example.trip.domain.location.domain.Location;
+import com.example.trip.domain.location.domain.LocationPath;
 import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.tag.domain.Tag;
 import jakarta.persistence.*;
@@ -58,6 +59,9 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tag> tagList = new ArrayList<>();  // 게시물에 대한 태그 리스트
+
+    @OneToOne(mappedBy = "post")
+    private LocationPath locationPath;
 
     @Builder
     public Post(String title, String content, Member member, List<PostCategory> postCategoryList, List<Location> locationList, List<Image> imageList, List<Tag> tagList) {

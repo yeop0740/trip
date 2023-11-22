@@ -1,4 +1,4 @@
-package com.example.trip.domain.member.location.domain;
+package com.example.trip.domain.location.domain;
 
 import lombok.Builder;
 import lombok.Data;
@@ -21,8 +21,6 @@ public class LocationDto {
                 .latitude(location.getLatitude())
                 .longitude(location.getLongitude())
                 .address(location.getAddress())
-                .telephone(location.getTelephone())
-                .status(location.getStatus())
                 .build();
     }
 }

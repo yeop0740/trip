@@ -8,6 +8,9 @@ import com.example.trip.global.ErrorMapCreator;
 import com.example.trip.global.SessionConst;
 import com.example.trip.global.annotation.Login;
 import com.example.trip.global.exception.RequestFieldException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -29,6 +32,7 @@ import static org.springframework.http.HttpStatus.*;
 @RestController
 @RequestMapping("/member")
 @RequiredArgsConstructor
+@Tag(name = "Member", description = "회원 관련 API")
 public class MemberController {
 
     private final MemberService memberService;
@@ -44,6 +48,7 @@ public class MemberController {
      * @param bindingResult
      * @return
      */
+    @Operation(summary = "회원 생성", description = "회원 정보를 가지고 회원을 생성하고, 세션 연결을 합니다.")
     @PostMapping("/create")
     public BaseResponse createMember(@Validated @RequestBody CreateMemberRequest createMemberRequest,
                                      BindingResult bindingResult,
@@ -79,6 +84,7 @@ public class MemberController {
      * @param httpServletRequest
      * @return
      */
+    @Operation(summary = "로그인", description = "id, password 정보를 가지고 로그인을 합니다. (세션 연결)")
     @PostMapping("/login")
     public BaseResponse loginMember(@Validated @RequestBody LoginMemberRequest loginMemberRequest,
                                     BindingResult bindingResult,
@@ -109,8 +115,9 @@ public class MemberController {
      * @param member
      * @return
      */
+    @Operation(summary = "회원 상세 정보 가져오기", description = "해당 회원의 스크랩 개수 및 게시물 개수등을 가져옵니다.")
     @GetMapping("/info")
-    public BaseResponse<GetMemberInfoResponse> getMemberInfo(@Login Member member){
+    public BaseResponse<GetMemberInfoResponse> getMemberInfo(@Parameter(hidden = true) @Login Member member){
 
         GetMemberInfoResponse getMemberInfoResponse = memberService.getMemberInfo(member);
 
@@ -128,9 +135,11 @@ public class MemberController {
      * @param request
      * @return
      */
+    @Operation(summary = "회원 삭제", description = "특정 회원을 삭제처리 합니다.")
     @DeleteMapping("/delete")
-    public BaseResponse deleteMember(@Login Member member,
-                                     HttpServletRequest request){
+    public BaseResponse deleteMember(
+            @Parameter(hidden = true) @Login Member member,
+            HttpServletRequest request){
 
         // 탈퇴 로직 호출
         memberService.deleteMember(member);
@@ -151,10 +160,12 @@ public class MemberController {
      *
      * 이름, 이미지 url, id, password를 입력받아 수정
      */
+    @Operation(summary = "회원 수정", description = "회원 정보를 가지고 정보를 수정합니다.")
     @PostMapping("/update")
-    public BaseResponse updateMember(@Login Member member,
-                                     @Validated @RequestBody UpdateMemberRequest updateMemberRequest,
-                                     BindingResult bindingResult) throws RequestFieldException, DuplicateException {
+    public BaseResponse updateMember(
+            @Parameter(hidden = true) @Login Member member,
+            @Validated @RequestBody UpdateMemberRequest updateMemberRequest,
+            BindingResult bindingResult) throws RequestFieldException, DuplicateException {
 
         // 필드 오류 체크
         if(bindingResult.hasErrors()){
@@ -173,9 +184,11 @@ public class MemberController {
      *
      * 세션 해제
      */
+    @Operation(summary = "로그아웃", description = "로그아웃 처리를 합니다.")
     @GetMapping("/logout")
-    public BaseResponse logout(@Login Member member,
-                               HttpServletRequest httpServletRequest){
+    public BaseResponse logout(
+            @Parameter(hidden = true) @Login Member member,
+            HttpServletRequest httpServletRequest){
 
         HttpSession session = httpServletRequest.getSession(false);
 
