@@ -11,22 +11,16 @@ import com.example.trip.global.exception.RequestFieldException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.http.HttpRequest;
 import java.util.List;
 import java.util.Map;
-
-import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @RestController
@@ -199,6 +193,42 @@ public class MemberController {
     }
 
 
+    /**
+     *  마이페이지 내 게시물 가져오기
+     */
+    @Operation(summary = "내 게시물 가져오기", description = "내가 작성했던 게시물의 목록을 가져옵니다.")
+    @GetMapping("/mypage/post")
+    public BaseResponse<List<GetMyPostResponse>> getMyPost(@Parameter(hidden = true) @Login Member member){
 
+        List<GetMyPostResponse> responseList = memberService.getMyPost(member);
+
+        return new BaseResponse<>(responseList);
+    }
+
+
+    /**
+     *  마이페이지 내 댓글 가져오기
+     */
+    @Operation(summary = "내 댓글 가져오기", description = "내가 작성한 댓글 내용의 목록을 가져옵니다.")
+    @GetMapping("/mypage/comment")
+    public BaseResponse<List<GetMyCommentResponse>> getMyComment(@Parameter(hidden = true) @Login Member member){
+
+        List<GetMyCommentResponse> responseList = memberService.getMyComment(member);
+
+        return new BaseResponse<>(responseList);
+    }
+
+
+    /**
+     *  마아페이지 내 스크랩 게시물 가져오기
+     */
+    @Operation(summary = "내 스크랩 게시물 가져오기", description = "내가 스크랩한 게시물의 목록을 가져옵니다.")
+    @GetMapping("/mypage/scrap")
+    public BaseResponse<List<GetMyScrapResponse>> getMyScrap(@Parameter(hidden = true) @Login Member member){
+
+        List<GetMyScrapResponse> responseList = memberService.getMyScrap(member);
+
+        return new BaseResponse<>(responseList);
+    }
 
 }

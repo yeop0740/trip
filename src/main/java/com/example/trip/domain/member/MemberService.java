@@ -1,11 +1,16 @@
 package com.example.trip.domain.member;
 
+import com.example.trip.domain.comment.domain.Comment;
+import com.example.trip.domain.comment.repository.CommentRepository;
+import com.example.trip.domain.interaction.InteractionRepository;
 import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.member.dto.*;
 import com.example.trip.domain.member.exception.DuplicateException;
 import com.example.trip.domain.member.exception.EmptyUserException;
 import com.example.trip.domain.member.exception.FireMemberException;
 import com.example.trip.domain.member.exception.PasswordMissException;
+import com.example.trip.domain.post.PostRepository;
+import com.example.trip.domain.post.domain.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +29,11 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
 
+    private final PostRepository postRepository;
+
+    private final CommentRepository commentRepository;
+
+    private final InteractionRepository interactionRepository;
 
     /**
      * 회원 등록 서비스 메소드
@@ -200,4 +210,34 @@ public class MemberService {
     }
 
 
+    public List<GetMyPostResponse> getMyPost(Member member) {
+        List<GetMyPostResponse> responseList = postRepository.findPostByMember(member);
+
+        return responseList;
+    }
+
+    public List<GetMyCommentResponse> getMyComment(Member member) {
+
+        List<GetMyCommentResponse> getMyCommentResponseList = new ArrayList<>();
+
+        List<Comment> findCommentList = commentRepository.findAllByMember(member);
+
+        for (Comment comment : findCommentList) {
+            getMyCommentResponseList.add(GetMyCommentResponse.builder()
+                            .commentId(comment.getId())
+                            .postId(comment.getPost().getId())
+                            .createTime(comment.getCreatedTime())
+                            .content(comment.getContent())
+                    .build());
+        }
+
+        return getMyCommentResponseList;
+    }
+
+    public List<GetMyScrapResponse> getMyScrap(Member member) {
+
+        List<GetMyScrapResponse> myScrapList = interactionRepository.findMyScrap(member);
+
+        return myScrapList;
+    }
 }
