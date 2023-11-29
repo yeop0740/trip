@@ -75,20 +75,12 @@ public class Location extends BaseEntity {
 
 
     // 연관관계 메소드
-    public void setPost(Post post){
-        this.post = post;
-        post.getLocationList().add(this);
-    }
 
     public void setLocationPath(LocationPath locationPath){
         this.locationPath = locationPath;
         locationPath.getLocationList().add(this);
     }
 
-    public void clear() {
-        post.getLocationList().remove(this);
-        this.post = null;
-    }
 
     public void updateLocation(String address, LocalDateTime endTime) {
         this.address = address;

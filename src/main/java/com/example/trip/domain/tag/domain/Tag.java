@@ -36,14 +36,6 @@ public class Tag extends BaseEntity {
     }
 
     // 연관관계 메소드
-    public void setPost(Post post){
-        this.post = post;
-        post.getTagList().add(this);
-    }
 
-    public void clear() {
-        post.getTagList().remove(this);
-        this.post = null;
-    }
 
 }
