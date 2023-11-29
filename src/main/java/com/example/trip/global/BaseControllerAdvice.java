@@ -87,5 +87,14 @@ public class BaseControllerAdvice {
     }
 
 
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public BaseResponse illegalArgumentExHandler(IllegalArgumentException ex){
+        log.info("[Base Handler] illegalArgumentException={}", ex);
+        return BaseResponse.builder()
+                .status(BAD_REQUEST)
+                .message(ex.getMessage())
+                .build();
+    }
 
 }

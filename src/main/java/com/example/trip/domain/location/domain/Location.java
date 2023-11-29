@@ -45,6 +45,10 @@ public class Location extends BaseEntity {
     @Column
     private boolean isImportant;    // 주요 지점
 
+    @Column
+    private String comment;     // 후기
+
+
     @ManyToOne
     @JoinColumn(name = "location_path_id")
     private LocationPath locationPath;  // 어떤 위치 정보모음에 속할 위치 정보인지
@@ -61,8 +65,14 @@ public class Location extends BaseEntity {
         this.startTime = startTime;
         this.endTime = endTime;
         this.isImportant = isImportant;
+        this.comment = null;
 
     }
+
+    public void setComment(String comment){
+        this.comment = comment;
+    }
+
 
     // 연관관계 메소드
     public void setPost(Post post){

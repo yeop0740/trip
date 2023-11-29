@@ -40,6 +40,10 @@ public class LocationPath extends BaseEntity {
     private Post post;
 
 
+    public void setTitle(String title){
+        this.title = title;
+    }
+
     @Builder
     public LocationPath(Member member, String title) {
         this.title = title;

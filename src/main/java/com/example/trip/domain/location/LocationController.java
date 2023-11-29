@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,49 @@ public class LocationController {
     private final LocationPathRepository locationPathRepository;
 
     private final LocationRepository locationRepository;
+
+
+    /**
+     * 여행 경로 모음 이름 수정
+     */
+    @Operation(summary = "여행 경로 모음의 이름을 수정", description = "여행 경로 모음에 대한 이름을 수정합니다.")
+    @PostMapping("/path/{pathId}")
+    public BaseResponse updateLocationPathName(
+            @Parameter(hidden = true) @Login Member member,
+            @Parameter(description = "여행 경로 모음 번호(id)", in = ParameterIn.PATH) @PathVariable Long pathId,
+            @Parameter(description = "여행 경로 모음 이름", in = ParameterIn.QUERY) @RequestParam("title") String title
+    ) throws WrongMemberException {
+
+        if(title != null && title.trim().length() == 0){
+            throw new IllegalArgumentException("제목은 비어있거나 공백이면 안됩니다.");
+        }
+
+
+        locationService.updateLocationPathName(member, pathId, title);
+
+
+
+        return new BaseResponse();
+    }
+
+
+    /**
+     * 특정 지점에 대한 후기 남기기
+     */
+    @Operation(summary = "여행의 특정 지점에 후기 수정", description = "특정 여행 지점에 대한 후기를 수정합니다. 기본적으로 null값이 들어있습니다.")
+    @PostMapping("/comment")
+    public BaseResponse updateLocationComment(
+            @Parameter(hidden = true) @Login Member member,
+            @Validated @RequestBody UpdateLocationRequest updateLocationRequest,
+            BindingResult bindingResult
+    ) throws WrongMemberException, WrongLocationIdException {
+
+        locationService.updateLocationComment(member, updateLocationRequest);
+
+
+        return new BaseResponse();
+    }
+
 
     /**
      * 회원의 여행 경로 목록 보기

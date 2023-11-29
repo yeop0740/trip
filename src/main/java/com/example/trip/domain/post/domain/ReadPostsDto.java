@@ -1,5 +1,6 @@
 package com.example.trip.domain.post.domain;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -12,7 +13,11 @@ import java.util.List;
 @Builder
 @ToString
 public class ReadPostsDto {
+
+    @Schema(description = "게시물 목록")
     private List<ReadPostDto> postList;
+
+    @Schema(description = "페이지 넘버")
     private int pageNumber;
     private int count;
     private boolean hasNextPage;

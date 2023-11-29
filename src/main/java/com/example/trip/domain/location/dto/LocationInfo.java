@@ -36,4 +36,7 @@ public class LocationInfo {
     @Schema(description = "주요 지점 여부", defaultValue = "false")
     private boolean isImportant;        // 주요 지점 여부
 
+    @Schema(description = "지점에 대해 남긴 후기")
+    private String comment;
+
 }

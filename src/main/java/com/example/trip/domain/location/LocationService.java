@@ -155,6 +155,7 @@ public class LocationService {
                             .startTime(location.getStartTime())
                             .endTime(location.getEndTime())
                             .isImportant(location.isImportant())
+                            .comment(location.getComment())
                             .build());
         }
 
@@ -190,5 +191,31 @@ public class LocationService {
             locationRepository.deleteById(locationId);
         }
 
+    }
+
+    public void updateLocationComment(Member member, UpdateLocationRequest updateLocationRequest) throws WrongMemberException, WrongLocationIdException {
+
+        if(!locationPathRepository.existsByIdAndMember(updateLocationRequest.getLocationPathId(), member)){
+            throw new WrongMemberException();
+        }
+
+        if(!locationRepository.existsById(updateLocationRequest.getLocationId())){
+            throw new WrongLocationIdException();
+        }
+
+        Location findLocation = locationRepository.findById(updateLocationRequest.getLocationId()).get();
+
+        findLocation.setComment(updateLocationRequest.getComment());
+    }
+
+    public void updateLocationPathName(Member member, Long pathId, String title) throws WrongMemberException {
+
+        if(!locationPathRepository.existsByIdAndMember(pathId, member)){
+            throw new WrongMemberException();
+        }
+
+        LocationPath findLocationPath = locationPathRepository.findById(pathId).get();
+
+        findLocationPath.setTitle(title);
     }
 }
