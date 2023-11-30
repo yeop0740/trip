@@ -23,13 +23,10 @@ public class CreatePostRequest {
     @Schema(description = "카테고리 목록")
     private List<Long> categoryList;
 
-    @Schema(description = "위치 경로 모음")
-    private List<Long> locationList;
+    @Schema(description = "위치 경로 모음 번호")
+    private Long locationPathId;
 
     @Schema(description = "이미지 번호 모음")
     private List<Long> imageList;
-
-    @Schema(description = "태그 번호 모음")
-    private List<String> tagList;
 
 }

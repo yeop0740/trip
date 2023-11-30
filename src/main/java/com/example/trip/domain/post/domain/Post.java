@@ -45,8 +45,11 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostCategory> postCategoryList = new ArrayList<>();    // 게시물에 대한 카테고리 모음 리스트
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Location> locationList = new ArrayList<>();    // 게시물에 대한 위치 정보 리스트
+//    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+//    private List<Location> locationList = new ArrayList<>();    // 게시물에 대한 위치 정보 리스트
+
+    @OneToOne(mappedBy = "post")
+    private LocationPath locationPath;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Image> imageList = new ArrayList<>();  // 게시물에 등록된 이미지 리스트
@@ -57,24 +60,15 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Interaction> interactionList = new ArrayList<>();  // 게시물에 엮인 상호작용 내역 리스트
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Tag> tagList = new ArrayList<>();  // 게시물에 대한 태그 리스트
-
-    @OneToOne(mappedBy = "post")
-    private LocationPath locationPath;
 
     @Builder
-    public Post(String title, String content, Member member, List<PostCategory> postCategoryList, List<Location> locationList, List<Image> imageList, List<Tag> tagList) {
+    public Post(String title, String content, Member member, List<PostCategory> postCategoryList, LocationPath locationPath, List<Image> imageList, List<Tag> tagList) {
         this.title = title;
         this.content = content;
-        for (Location location : locationList) {
-            location.setPost(this);
-        }
+        this.locationPath = locationPath;
+        locationPath.setPost(this);
         for (Image image : imageList) {
             image.setPost(this);
-        }
-        for (Tag tag : tagList) {
-            tag.setPost(this);
         }
         for (PostCategory postCategory : postCategoryList) {
             postCategory.setPost(this);
@@ -93,15 +87,12 @@ public class Post extends BaseEntity {
         member.getPostList().add(this);
     }
 
-    public void change(String title, String content, List<PostCategory> postCategoryList, List<Location> locationList, List<Image> imageList, List<Tag> tagList) {
+    public void change(String title, String content, List<PostCategory> postCategoryList, LocationPath locationPath, List<Image> imageList) {
         this.title = title;
         this.content = content;
-        for (int i = this.locationList.size() - 1; i >= 0; i--) {
-            this.locationList.get(i).clear();
-        }
-        for (Location location : locationList) {
-            location.setPost(this);
-        }
+        this.locationPath = locationPath;
+        locationPath.setPost(this);
+
         for (int i = this.imageList.size() - 1; i >= 0; i--) {
             this.imageList.get(i).clear();
         }
@@ -113,12 +104,6 @@ public class Post extends BaseEntity {
         }
         for (PostCategory postCategory : postCategoryList) {
             postCategory.setPost(this);
-        }
-        for (int i = this.tagList.size() - 1; i >= 0; i--) {
-            this.tagList.get(i).clear();
-        }
-        for (Tag tag : tagList) {
-            tag.setPost(this);
         }
     }
 

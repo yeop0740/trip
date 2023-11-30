@@ -3,6 +3,8 @@ package com.example.trip.domain.post.service;
 import com.example.trip.domain.category.CategoryRepository;
 import com.example.trip.domain.image.ImageRepository;
 import com.example.trip.domain.image.domain.Image;
+import com.example.trip.domain.location.domain.LocationPath;
+import com.example.trip.domain.location.repository.LocationPathRepository;
 import com.example.trip.domain.member.MemberRepository;
 import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.location.repository.LocationRepository;
@@ -28,18 +30,17 @@ public class PostService {
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
+
+    private final LocationPathRepository locationPathRepository;
     private final ImageRepository imageRepository;
 //    private final PostCategoryRepository
 
     public Long createPost(Long userId, CreatePostRequest request) {
         Member member = memberRepository.findById(userId).orElseThrow(RuntimeException::new);
-        List<Location> locationList = locationRepository.findAllById(request.getLocationList());
+        LocationPath locationPath = locationPathRepository.findById(request.getLocationPathId()).orElseThrow(() -> new RuntimeException("엔티티가 존재하지 않습니다."));
         List<Image> imageList = imageRepository.findAllById(request.getImageList());
         List<PostCategory> postCategoryList = categoryRepository.findAllById(request.getCategoryList()).stream()
                 .map(PostCategory::new)
-                .toList();
-        List<Tag> tagList = request.getTagList().stream()
-                .map(Tag::new)
                 .toList();
 
         Post post = Post.builder()
@@ -47,9 +48,8 @@ public class PostService {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .postCategoryList(postCategoryList)
-                .locationList(locationList)
+                .locationPath(locationPath)
                 .imageList(imageList)
-                .tagList(tagList)
                 .build();
 
         postRepository.save(post);
@@ -72,22 +72,20 @@ public class PostService {
     public Long updatePost(Long userId, UpdatePostRequest request) {
         Member member = memberRepository.findById(userId).orElseThrow(() -> new RuntimeException("엔티티가 존재하지 않습니다."));
         Post post = postRepository.findById(request.getId()).orElseThrow(() -> new RuntimeException("엔티티가 존재하지 않습니다."));
-        List<Location> locationList = locationRepository.findAllById(request.getLocationList());
+        LocationPath locationPath = locationPathRepository.findById(request.getLocationPathId()).orElseThrow(() -> new RuntimeException("엔티티가 존재하지 않습니다."));
         List<Image> imageList = imageRepository.findAllById(request.getImageList());
         List<PostCategory> postCategoryList = categoryRepository.findAllById(
                 request.getCategoryList()).stream()
                 .map(PostCategory::new)
                 .toList();
 //        postCategoryRepository.save()
-        List<Tag> tagList = request.getTagList().stream()
-                .map(Tag::new)
-                .toList();
+
 
         if (!isValid(post, member)) {
             throw new RuntimeException("허용되지 않는 요청입니다.");
         }
 
-        post.change(request.getTitle(), request.getContent(), postCategoryList, locationList, imageList, tagList);
+        post.change(request.getTitle(), request.getContent(), postCategoryList, locationPath, imageList);
 
         return post.getId();
     }
@@ -99,7 +97,6 @@ public class PostService {
         if (!isValid(post, member)) {
             throw new RuntimeException("허용되지 않는 요청입니다.");
         }
-
         postRepository.delete(post);
     }
 
