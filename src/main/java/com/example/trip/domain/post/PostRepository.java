@@ -3,14 +3,15 @@ package com.example.trip.domain.post;
 import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.member.dto.GetMyPostResponse;
 import com.example.trip.domain.post.domain.Post;
-import io.swagger.v3.oas.annotations.Parameter;
+import com.example.trip.domain.post.domain.PostCategory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import com.example.trip.domain.interaction.domain.InteractionType;
 
 import java.util.List;
 
@@ -28,5 +29,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             " p.createdTime " +
             " ) from Post p where p.member = :member")
     List<GetMyPostResponse> findPostByMember(@Param("member") Member member);
+
+    Slice<Post> findAllByPostCategoryListIn(List<PostCategory> categories, PageRequest page);
 
 }

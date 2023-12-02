@@ -1,6 +1,7 @@
 package com.example.trip.domain.post.service;
 
 import com.example.trip.domain.category.CategoryRepository;
+import com.example.trip.domain.category.domain.Category;
 import com.example.trip.domain.image.ImageRepository;
 import com.example.trip.domain.image.domain.Image;
 import com.example.trip.domain.location.domain.LocationPath;
@@ -11,15 +12,19 @@ import com.example.trip.domain.location.repository.LocationRepository;
 import com.example.trip.domain.location.domain.Location;
 import com.example.trip.domain.post.PostRepository;
 import com.example.trip.domain.post.domain.*;
+import com.example.trip.domain.post.repository.PostCategoryRepository;
+import com.example.trip.domain.post.repository.PostJpqlRepository;
 import com.example.trip.domain.tag.domain.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -33,7 +38,8 @@ public class PostService {
 
     private final LocationPathRepository locationPathRepository;
     private final ImageRepository imageRepository;
-//    private final PostCategoryRepository
+    private final PostCategoryRepository postCategoryRepository;
+    private final PostJpqlRepository postJpqlRepository;
 
     public Long createPost(Long userId, CreatePostRequest request) {
         Member member = memberRepository.findById(userId).orElseThrow(RuntimeException::new);
@@ -103,4 +109,18 @@ public class PostService {
     private boolean isValid(Post post, Member member) {
         return post.getMember().equals(member);
     }
+
+    public ReadPostsDto readPostsByCategory(Long categoryId, int pageNumber, int pageSize) {
+        PageRequest page = PageRequest.of(pageNumber, pageSize);
+        Category category = categoryRepository.findById(categoryId).orElseThrow(RuntimeException::new);
+        List<PostCategory> categories = postCategoryRepository.findByCategory(category);
+        Slice<Post> posts = postRepository.findAllByPostCategoryListIn(categories, page);
+        return ReadPostsDto.of(posts);
+    }
+
+    public ReadPostsDto readPostsBySearch(SearchType search) {
+        Stream<Post> posts = postJpqlRepository.findBySearch(search);
+        return ReadPostsDto.of(posts, search);
+    }
+
 }
