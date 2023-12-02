@@ -8,6 +8,7 @@ import com.example.trip.domain.location.exception.WrongMemberException;
 import com.example.trip.domain.location.repository.LocationPathRepository;
 import com.example.trip.domain.location.repository.LocationRepository;
 import com.example.trip.domain.member.domain.Member;
+import com.example.trip.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,8 @@ public class LocationService {
     //private final RestTemplate restTemplate;
     private final LocationRepository locationRepository;
     private final LocationPathRepository locationPathRepository;
+
+    private final PostService postService;
 
     public void saveLocation(String title, Map<Position, PathTime> locationMap, Member member) {
 
@@ -168,6 +171,14 @@ public class LocationService {
         if(!locationPathRepository.existsByIdAndMember(pathId, member)){
             throw new WrongMemberException();
         }
+
+        LocationPath findLocationPath = locationPathRepository.findById(pathId).get();
+
+        if(findLocationPath.getPost() != null){
+            postService.deletePost(member.getId(), findLocationPath.getPost().getId());
+        }
+
+
 
         locationPathRepository.deleteById(pathId);
 

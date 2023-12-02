@@ -8,6 +8,8 @@ import com.example.trip.domain.location.exception.WrongMemberException;
 import com.example.trip.domain.location.repository.LocationPathRepository;
 import com.example.trip.domain.location.repository.LocationRepository;
 import com.example.trip.domain.member.domain.Member;
+import com.example.trip.domain.post.domain.Post;
+import com.example.trip.domain.post.service.PostService;
 import com.example.trip.global.BaseResponse;
 import com.example.trip.global.annotation.Login;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,6 +41,7 @@ public class LocationController {
 
     private final LocationRepository locationRepository;
 
+    private final PostService postService;
 
     /**
      * 여행 경로 모음 이름 수정
@@ -128,6 +131,7 @@ public class LocationController {
 
     /**
      * 경로 모음 삭제는 특정 회원의 특정 경로 모음을 삭제
+     * 동시에 관련된 게시물도 삭제
      */
     @Operation(summary = "여행 경로 모음 삭제", description = "특정 회원의 여행 경로 모음을 삭제합니다.")
     @DeleteMapping("/{pathId}")
@@ -135,7 +139,11 @@ public class LocationController {
             @Parameter(hidden = true) @Login Member member,
             @Parameter(description = "여행 경로 모음 번호(id)", in = ParameterIn.PATH) @PathVariable Long pathId) throws WrongMemberException {
 
+
+
         locationService.delLocationPath(member, pathId);
+
+
 
         return new BaseResponse();
     }
