@@ -40,6 +40,12 @@ public class PostController {
         return new BaseResponse<>(posts);
     }
 
+    @GetMapping("/search")
+    public BaseResponse<ReadPostsDto> readPostsByCategory(@ModelAttribute SearchType search) {
+        ReadPostsDto posts = postService.readPostsBySearch(search);
+        return new BaseResponse<>(posts);
+    }
+
     @Operation(summary = "게시물 수정", description = "게시물을 업데이트합니다.")
     @PutMapping
     public BaseResponse<Long> updatePost(@Parameter(hidden = true) @Login Member member, @RequestBody UpdatePostRequest request) {
