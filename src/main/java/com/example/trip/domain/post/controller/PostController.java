@@ -40,6 +40,7 @@ public class PostController {
         return new BaseResponse<>(posts);
     }
 
+    @Operation(summary = "게시물 검색", description = "게시물을 카테고리 id, 사용자 닉네임, 게시물 제목을 기준으로 검색합니다.")
     @GetMapping("/search")
     public BaseResponse<ReadPostsDto> readPostsByCategory(@ModelAttribute SearchType search) {
         ReadPostsDto posts = postService.readPostsBySearch(search);
