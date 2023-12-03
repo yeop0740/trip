@@ -24,10 +24,10 @@ public class GetMyScrapResponse {
     private String title;
 
     @Schema(description = "게시물 좋아요 개수")
-    private int likes;
+    private Long likes;
 
     @Schema(description = "게시물 스크랩 개수")
-    private int scraps;
+    private Long scraps;
 
     @Schema(description = "게시물 생성 일자")
     private LocalDateTime createdTime;
