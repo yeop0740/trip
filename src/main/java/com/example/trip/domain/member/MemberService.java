@@ -46,7 +46,7 @@ public class MemberService {
     public Member createMember(CreateMemberRequest request) throws DuplicateException {
 
         // id, nickname 체크
-        duplicateIdAndNicknameCheck(request.getUserId(), request.getNickname());
+        duplicateIdAndNicknameCheck(null, request.getUserId(), request.getNickname());
 
         // 패스워드 암호화
         String password = passwordEncoder.encode(request.getPassword());
@@ -72,16 +72,18 @@ public class MemberService {
      *
      * @throws DuplicateException
      */
-    private void duplicateIdAndNicknameCheck(String userId, String nickname) throws DuplicateException {
+    private void duplicateIdAndNicknameCheck(Member member, String userId, String nickname) throws DuplicateException {
         Map<String, String> errorMap = new HashMap<>();
 
-        // id 중복 체크
-        if(memberRepository.findByUserId(userId) != null){
+
+
+        // id 중복 체크 - 기존 아이디랑 다른게 들어왔을 때
+        if(member != null && !member.getUserId().equals(userId) && memberRepository.findByUserId(userId) != null){
             errorMap.put("id", userId);
         }
 
-        // nickname 중복 체크
-        if(memberRepository.findByNickname(nickname) != null){
+        // nickname 중복 체크 - 기존 닉네임이랑 다른게 들어왔을 때
+        if(member != null && !member.getNickname().equals(nickname) && memberRepository.findByNickname(nickname) != null){
             errorMap.put("nickname", nickname);
         }
 
@@ -168,7 +170,7 @@ public class MemberService {
     public void updateMember(Member member, UpdateMemberRequest request) throws DuplicateException {
 
         // id, nickname 체크
-        duplicateIdAndNicknameCheck(request.getUserId(), request.getNickname());
+        duplicateIdAndNicknameCheck(member, request.getUserId(), request.getNickname());
 
         // 비밀번호 암호화
         String password = passwordEncoder.encode(request.getPassword());
