@@ -2,19 +2,19 @@ package com.example.trip.domain.post.service;
 
 import com.example.trip.domain.category.CategoryRepository;
 import com.example.trip.domain.category.domain.Category;
+import com.example.trip.domain.image.ImageManager;
 import com.example.trip.domain.image.ImageRepository;
 import com.example.trip.domain.image.domain.Image;
+import com.example.trip.domain.image.domain.ImageDto;
 import com.example.trip.domain.location.domain.LocationPath;
 import com.example.trip.domain.location.repository.LocationPathRepository;
+import com.example.trip.domain.location.repository.LocationRepository;
 import com.example.trip.domain.member.MemberRepository;
 import com.example.trip.domain.member.domain.Member;
-import com.example.trip.domain.location.repository.LocationRepository;
-import com.example.trip.domain.location.domain.Location;
 import com.example.trip.domain.post.PostRepository;
 import com.example.trip.domain.post.domain.*;
 import com.example.trip.domain.post.repository.PostCategoryRepository;
 import com.example.trip.domain.post.repository.PostJpqlRepository;
-import com.example.trip.domain.tag.domain.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,6 +41,8 @@ public class PostService {
     private final PostCategoryRepository postCategoryRepository;
     private final PostJpqlRepository postJpqlRepository;
 
+    private final ImageManager imageManager;
+
     public Long createPost(Long userId, CreatePostRequest request) {
         Member member = memberRepository.findById(userId).orElseThrow(RuntimeException::new);
         LocationPath locationPath = locationPathRepository.findById(request.getLocationPathId()).orElseThrow(() -> new RuntimeException("엔티티가 존재하지 않습니다."));
@@ -65,14 +67,17 @@ public class PostService {
 
     public PostDetailsDto readPostDetails(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("엔티티가 존재하지 않습니다."));
-        return PostDetailsDto.of(post);
+        return PostDetailsDto.of(post, getImageDtoList(post));
     }
 
     public ReadPostsDto readPosts(int pageNumber, int pageSize) {
         Sort sort = Sort.by("createdTime").descending();
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
         Page<Post> postList = postRepository.findAll(pageRequest);
-        return ReadPostsDto.of(postList);
+        List<ReadPostDto> postDtoList = postList.stream()
+                .map(post -> ReadPostDto.of(post, getImageDtoList(post)))
+                .toList();
+        return ReadPostsDto.of(postList, postDtoList);
     }
 
     public Long updatePost(Long userId, UpdatePostRequest request) {
@@ -81,7 +86,7 @@ public class PostService {
         LocationPath locationPath = locationPathRepository.findById(request.getLocationPathId()).orElseThrow(() -> new RuntimeException("엔티티가 존재하지 않습니다."));
         List<Image> imageList = imageRepository.findAllById(request.getImageList());
         List<PostCategory> postCategoryList = categoryRepository.findAllById(
-                request.getCategoryList()).stream()
+                        request.getCategoryList()).stream()
                 .map(PostCategory::new)
                 .toList();
 //        postCategoryRepository.save()
@@ -114,13 +119,23 @@ public class PostService {
         PageRequest page = PageRequest.of(pageNumber, pageSize);
         Category category = categoryRepository.findById(categoryId).orElseThrow(RuntimeException::new);
         List<PostCategory> categories = postCategoryRepository.findByCategory(category);
-        Slice<Post> posts = postRepository.findAllByPostCategoryListIn(categories, page);
-        return ReadPostsDto.of(posts);
+        Slice<Post> postList = postRepository.findAllByPostCategoryListIn(categories, page);
+        List<ReadPostDto> postDtoList = postList.map(post -> ReadPostDto.of(post, getImageDtoList(post)))
+                .toList();
+        return ReadPostsDto.of(postList, postDtoList);
     }
 
     public ReadPostsDto readPostsBySearch(SearchType search) {
-        Stream<Post> posts = postJpqlRepository.findBySearch(search);
-        return ReadPostsDto.of(posts, search);
+        Stream<Post> postList = postJpqlRepository.findBySearch(search);
+        List<ReadPostDto> postDtoList = postList.map(post -> ReadPostDto.of(post, getImageDtoList(post)))
+                .toList();
+        return ReadPostsDto.of(postDtoList, search);
+    }
+
+    public List<ImageDto> getImageDtoList(Post post) {
+        return post.getImageList().stream()
+                .map(image -> ImageDto.of(image.getId(), imageManager.createSignedUrlForString(image.getImageKey())))
+                .toList();
     }
 
 }

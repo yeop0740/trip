@@ -7,7 +7,6 @@ import lombok.ToString;
 import org.springframework.data.domain.Slice;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 @Data
 @Builder
@@ -22,21 +21,18 @@ public class ReadPostsDto {
     private int count;
     private boolean hasNextPage;
 
-    public static ReadPostsDto of(Slice<Post> postList) {
+    public static ReadPostsDto of(Slice<Post> postList, List<ReadPostDto> postDtoList) {
         return ReadPostsDto.builder()
-                .postList(postList.getContent().stream()
-                        .map(ReadPostDto::of)
-                        .toList())
+                .postList(postDtoList)
                 .pageNumber(postList.getNumber())
                 .count(postList.getNumberOfElements())
                 .hasNextPage(postList.hasNext())
                 .build();
     }
 
-    public static ReadPostsDto of(Stream<Post> postList, SearchType search) {
+    public static ReadPostsDto of(List<ReadPostDto> postDtoList, SearchType search) {
         ReadPostsDto post = ReadPostsDto.builder()
-                .postList(postList.map(ReadPostDto::of)
-                        .toList())
+                .postList(postDtoList)
                 .pageNumber(search.getPageNumber())
                 .build();
         if (post.postList.size() > search.getPageSize()) {

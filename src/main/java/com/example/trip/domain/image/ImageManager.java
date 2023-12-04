@@ -41,6 +41,7 @@ public class ImageManager {
         PutObjectRequest putOb = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
+                .contentType(multipartFile.getContentType())
                 .build();
 
         s3.putObject(putOb, RequestBody.fromBytes(bytes));
