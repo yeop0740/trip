@@ -39,4 +39,12 @@ public class ImageService {
                 .toList();
     }
 
+    public List<Image> findDeleteImageList() {
+        return imageRepository.findAllByPostIsNull();
+    }
+
+    public void deleteImages(List<Image> imageList) {
+        imageRepository.deleteAll(imageList);
+    }
+
 }

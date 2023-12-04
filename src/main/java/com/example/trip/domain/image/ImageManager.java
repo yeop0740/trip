@@ -1,5 +1,6 @@
 package com.example.trip.domain.image;
 
+import com.example.trip.domain.image.domain.Image;
 import com.example.trip.domain.image.domain.UploadImageDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -114,6 +115,10 @@ public class ImageManager {
                 .build();
 
         s3.deleteObject(deleteObjectRequest);
+    }
+
+    public void deleteImages(List<Image> imageList) {
+        imageList.forEach(image -> delete(image.getImageKey()));
     }
 
 }

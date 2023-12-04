@@ -1,10 +1,12 @@
 package com.example.trip.domain.image;
 
 import com.example.trip.domain.image.domain.CreateImageRequest;
+import com.example.trip.domain.image.domain.Image;
 import com.example.trip.domain.member.domain.Member;
 import com.example.trip.global.BaseResponse;
 import com.example.trip.global.annotation.Login;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +31,13 @@ public class ImageController {
         Map<String, String> imageInfos = imageManager.uploadImages(request.getImages(), UUID.randomUUID());
         List<Long> imageIds = imageService.createImages(imageInfos);
         return new BaseResponse<>(imageIds);
+    }
+
+    @Scheduled(cron = "0 0 0 1 * ?")
+    public void deleteImages() {
+        List<Image> imageList = imageService.findDeleteImageList();
+        imageManager.deleteImages(imageList);
+        imageService.deleteImages(imageList);
     }
 
 }
