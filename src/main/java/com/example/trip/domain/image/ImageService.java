@@ -31,4 +31,12 @@ public class ImageService {
                 .map(Image::getId)
                 .toList();
     }
+
+    public List<String> readImageKeys(List<Long> ids) {
+        List<Image> imageList = imageRepository.findAllById(ids);
+        return imageList.stream()
+                .map(Image::getImageKey)
+                .toList();
+    }
+
 }

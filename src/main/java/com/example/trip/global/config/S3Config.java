@@ -39,4 +39,14 @@ public class S3Config {
         return bucketName;
     }
 
+    @Bean
+    public Region getRegion() {
+        return region;
+    }
+
+    @Bean
+    public AwsCredentials getCredentials() {
+        return AwsBasicCredentials.create(accessKeyId, secretAccessKey);
+    }
+
 }
