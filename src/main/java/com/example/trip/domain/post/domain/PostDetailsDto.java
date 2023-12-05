@@ -2,15 +2,13 @@ package com.example.trip.domain.post.domain;
 
 import com.example.trip.domain.category.domain.Category;
 import com.example.trip.domain.comment.domain.CommentDto;
-import com.example.trip.domain.image.domain.Image;
+import com.example.trip.domain.image.domain.ImageDto;
 import com.example.trip.domain.interaction.domain.Interaction;
 import com.example.trip.domain.interaction.domain.InteractionType;
 import com.example.trip.domain.location.domain.Location;
 import com.example.trip.domain.location.domain.LocationPath;
 import com.example.trip.domain.location.dto.LocationInfo;
 import com.example.trip.domain.member.domain.MemberDto;
-import com.example.trip.domain.location.domain.LocationDto;
-import com.example.trip.domain.tag.domain.Tag;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -48,7 +46,7 @@ public class PostDetailsDto {
     private List<LocationInfo> locationInfo;
     
     @Schema(description = "게시물에 들어간 이미지 리스트")
-    private List<String> imageList;
+    private List<ImageDto> imageList;
     
     @Schema(description = "게시물의 좋아요 개수")
     private int likes;
@@ -60,7 +58,7 @@ public class PostDetailsDto {
     @Schema(description = "게시물의 후기 리스트")
     private List<CommentDto> commentList;
 
-    public static PostDetailsDto of(Post post) {
+    public static PostDetailsDto of(Post post, List<ImageDto> imageDtoList) {
         Map<InteractionType, List<Interaction>> interactionTypeMap = post.getInteractionList().stream()
                 .collect(Collectors.groupingBy(Interaction::getType));
 
@@ -92,9 +90,7 @@ public class PostDetailsDto {
                         .toList())
                 .locationPathId(post.getLocationPath().getId())
                 .locationInfo(locationInfoList)
-                .imageList(post.getImageList().stream()
-                        .map(Image::getImageurl)
-                        .toList())
+                .imageList(imageDtoList)
                 .likes(interactionTypeMap.get(InteractionType.LIKE) == null ? 0 : interactionTypeMap.get(InteractionType.LIKE).size())
                 .scraps(interactionTypeMap.get(InteractionType.SCRAP) == null ? 0 : interactionTypeMap.get(InteractionType.SCRAP).size())
                 .commentList(post.getCommentList().stream()

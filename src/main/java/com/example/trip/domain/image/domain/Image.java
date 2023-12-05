@@ -25,6 +25,8 @@ public class Image extends BaseEntity {
     @Column(nullable = false)
     private String imageurl;    // 이미지 링크
 
+    private String imageKey;
+
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;  // 이미지가 등록된 게시물
@@ -41,7 +43,14 @@ public class Image extends BaseEntity {
         this.post = null;
     }
 
-    public Image(String imageurl) {
-        this.imageurl = imageurl;
+    public Image(UploadImageDTO image) {
+        this.imageurl = image.getUrl();
+        this.imageKey = image.getKey();
     }
+
+    public Image(String imageurl, String imageKey) {
+        this.imageurl = imageurl;
+        this.imageKey = imageKey;
+    }
+
 }
