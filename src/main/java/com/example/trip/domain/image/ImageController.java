@@ -35,7 +35,7 @@ public class ImageController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse<List<Long>> createImage(@Parameter(hidden = true) @Login Member member, @RequestPart MultipartFile[] images) throws IOException {
         Map<String, String> imageInfos = imageManager.uploadImages(List.of(images), UUID.randomUUID());
-        List<Long> imageIds = imageService.createImages(imageInfos);
+        List<Long> imageIds = imageService.createImages(imageInfos, member);
         return new BaseResponse<>(imageIds);
     }
 

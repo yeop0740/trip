@@ -1,6 +1,7 @@
 package com.example.trip.domain.image.domain;
 
 import com.example.trip.domain.BaseEntity;
+import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -31,6 +32,10 @@ public class Image extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;  // 이미지가 등록된 게시물
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
 
     // 연관관계 메소드
     public void setPost(Post post){
@@ -51,6 +56,12 @@ public class Image extends BaseEntity {
     public Image(String imageurl, String imageKey) {
         this.imageurl = imageurl;
         this.imageKey = imageKey;
+    }
+
+    public Image(String imageurl, String imageKey, Member member) {
+        this.imageurl = imageurl;
+        this.imageKey = imageKey;
+        this.member = member;
     }
 
 }
