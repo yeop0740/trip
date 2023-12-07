@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Transactional
@@ -26,9 +25,9 @@ public class ImageService {
         return image.getId();
     }
 
-    public List<Long> createImages(Map<String, String> imageInfos, Member member) {
-        List<Image> images = imageInfos.keySet().stream()
-                .map(imageKey -> new Image(imageInfos.get(imageKey), imageKey, member))
+    public List<Long> createImages(List<String> imageKeys, Member member) {
+        List<Image> images = imageKeys.stream()
+                .map(imageKey -> new Image(imageKey, member))
                 .toList();
         imageRepository.saveAll(images);
         return images.stream()

@@ -58,8 +58,7 @@ public class Image extends BaseEntity {
         this.imageKey = imageKey;
     }
 
-    public Image(String imageurl, String imageKey, Member member) {
-        this.imageurl = imageurl;
+    public Image(String imageKey, Member member) {
         this.imageKey = imageKey;
         this.member = member;
     }

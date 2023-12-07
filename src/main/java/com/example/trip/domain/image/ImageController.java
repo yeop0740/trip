@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -34,8 +33,8 @@ public class ImageController {
     @Operation(summary = "이미지 등록", description = "1개 이상의 이미지를 S3에 저장한 뒤 데이터베이스에 정보를 저장합니다.")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse<List<Long>> createImage(@Parameter(hidden = true) @Login Member member, @RequestPart MultipartFile[] images) throws IOException {
-        Map<String, String> imageInfos = imageManager.uploadImages(List.of(images), UUID.randomUUID());
-        List<Long> imageIds = imageService.createImages(imageInfos, member);
+        List<String> imageKeys = imageManager.uploadImages(List.of(images), UUID.randomUUID());
+        List<Long> imageIds = imageService.createImages(imageKeys, member);
         return new BaseResponse<>(imageIds);
     }
 
