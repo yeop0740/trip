@@ -22,7 +22,7 @@ public class Image extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;   // 식별자
 
-    @Column(nullable = false)
+    @Column(length = 2047)
     private String imageurl;    // 이미지 링크
 
     private String imageKey;

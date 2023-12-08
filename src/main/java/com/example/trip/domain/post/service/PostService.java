@@ -51,6 +51,10 @@ public class PostService {
                 .map(PostCategory::new)
                 .toList();
 
+        if (!validate(locationPath, member)) {
+            throw new RuntimeException("허용되지 않는 요청입니다.");
+        }
+
         Post post = Post.builder()
                 .member(member)
                 .title(request.getTitle())
@@ -91,6 +95,9 @@ public class PostService {
                 .toList();
 //        postCategoryRepository.save()
 
+        if (!validate(locationPath, member)) {
+            throw new RuntimeException("허용되지 않는 요청입니다.");
+        }
 
         if (!isValid(post, member)) {
             throw new RuntimeException("허용되지 않는 요청입니다.");
@@ -108,6 +115,7 @@ public class PostService {
         if (!isValid(post, member)) {
             throw new RuntimeException("허용되지 않는 요청입니다.");
         }
+        post.deleteLocationPath();
         postRepository.delete(post);
     }
 
@@ -136,6 +144,13 @@ public class PostService {
         return post.getImageList().stream()
                 .map(image -> ImageDto.of(image.getId(), imageManager.createSignedUrlForString(image.getImageKey())))
                 .toList();
+    }
+
+    public boolean validate(LocationPath locationPath, Member member) {
+        if (locationPath.getMember().getId().equals(member.getId())) {
+            return true;
+        }
+        return false;
     }
 
 }
