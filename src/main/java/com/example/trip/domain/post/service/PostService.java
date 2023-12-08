@@ -108,6 +108,7 @@ public class PostService {
         if (!isValid(post, member)) {
             throw new RuntimeException("허용되지 않는 요청입니다.");
         }
+        post.deleteLocationPath();
         postRepository.delete(post);
     }
 

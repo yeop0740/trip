@@ -5,7 +5,6 @@ import com.example.trip.domain.BaseEntity;
 import com.example.trip.domain.comment.domain.Comment;
 import com.example.trip.domain.image.domain.Image;
 import com.example.trip.domain.interaction.domain.Interaction;
-import com.example.trip.domain.location.domain.Location;
 import com.example.trip.domain.location.domain.LocationPath;
 import com.example.trip.domain.member.domain.Member;
 import com.example.trip.domain.tag.domain.Tag;
@@ -110,6 +109,11 @@ public class Post extends BaseEntity {
     public void delete(Interaction interaction) {
         this.interactionList.remove(interaction);
         interaction.delete();
+    }
+
+    public void deleteLocationPath() {
+        locationPath.setPost(null);
+        locationPath = null;
     }
 
 }
