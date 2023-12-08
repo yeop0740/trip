@@ -1,6 +1,7 @@
 package com.example.trip.domain.post.domain;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +25,7 @@ public class CreatePostRequest {
     private List<Long> categoryList;
 
     @Schema(description = "위치 경로 모음 번호")
+    @NotEmpty
     private Long locationPathId;
 
     @Schema(description = "이미지 번호 모음")
