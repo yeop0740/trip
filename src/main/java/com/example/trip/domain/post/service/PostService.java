@@ -55,6 +55,10 @@ public class PostService {
             throw new RuntimeException("허용되지 않는 요청입니다.");
         }
 
+        if (!validateImages(imageList, member)) {
+            throw new RuntimeException("허용되지 않는 요청입니다.");
+        }
+
         Post post = Post.builder()
                 .member(member)
                 .title(request.getTitle())
@@ -93,9 +97,12 @@ public class PostService {
                         request.getCategoryList()).stream()
                 .map(PostCategory::new)
                 .toList();
-//        postCategoryRepository.save()
 
         if (!validate(locationPath, member)) {
+            throw new RuntimeException("허용되지 않는 요청입니다.");
+        }
+
+        if (!validateImages(imageList, member)) {
             throw new RuntimeException("허용되지 않는 요청입니다.");
         }
 
@@ -151,6 +158,15 @@ public class PostService {
             return true;
         }
         return false;
+    }
+
+    private boolean validateImages(List<Image> imageList, Member member) {
+        for (Image image : imageList) {
+            if (!image.getMember().getId().equals(member.getId())) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

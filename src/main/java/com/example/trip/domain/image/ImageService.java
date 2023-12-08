@@ -2,12 +2,13 @@ package com.example.trip.domain.image;
 
 import com.example.trip.domain.image.domain.Image;
 import com.example.trip.domain.image.domain.UploadImageDTO;
+import com.example.trip.domain.member.MemberRepository;
+import com.example.trip.domain.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Transactional
@@ -16,15 +17,17 @@ public class ImageService {
 
     private final ImageRepository imageRepository;
 
+    private final MemberRepository memberRepository;
+
     public Long createImage(UploadImageDTO imageInfo) {
         Image image = new Image(imageInfo);
         imageRepository.save(image);
         return image.getId();
     }
 
-    public List<Long> createImages(Map<String, String> imageInfos) {
-        List<Image> images = imageInfos.keySet().stream()
-                .map(imageKey -> new Image(imageInfos.get(imageKey), imageKey))
+    public List<Long> createImages(List<String> imageKeys, Member member) {
+        List<Image> images = imageKeys.stream()
+                .map(imageKey -> new Image(imageKey, member))
                 .toList();
         imageRepository.saveAll(images);
         return images.stream()
