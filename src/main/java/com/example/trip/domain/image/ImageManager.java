@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Component
@@ -63,10 +64,23 @@ public class ImageManager {
         return imageKeys;
     }
 
+    public List<String> uploadImagesParallel(List<MultipartFile> multipartFiles, UUID uuid) {
+        return multipartFiles.parallelStream()
+                .map(file -> {
+                    try {
+                        return uploadImage(file, uuid);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
     public String createKey(String fileName, UUID uuid) {
         return new StringBuffer()
                 .append(uuid.toString())
-                .append("/")
+                .append("_")
                 .append(fileName)
                 .toString();
     }

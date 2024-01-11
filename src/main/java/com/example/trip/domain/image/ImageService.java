@@ -35,6 +35,16 @@ public class ImageService {
                 .toList();
     }
 
+    public List<Long> createImagesParallel(List<String> imageKeys, Member member) {
+        List<Image> images = imageKeys.parallelStream()
+                .map(imageKey -> new Image(imageKey, member))
+                .toList();
+        imageRepository.saveAll(images);
+        return images.stream()
+                .map(Image::getId)
+                .toList();
+    }
+
     public List<String> readImageKeys(List<Long> ids) {
         List<Image> imageList = imageRepository.findAllById(ids);
         return imageList.stream()
