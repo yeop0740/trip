@@ -63,4 +63,8 @@ public class Image extends BaseEntity {
         this.member = member;
     }
 
+    public void changeImageKey(String imageKey) {
+        this.imageKey = imageKey;
+    }
+
 }

@@ -42,9 +42,37 @@ public class ImageController {
 
     @Operation(summary = "이미지 등록", description = "1개 이상의 이미지를 S3에 저장한 뒤 데이터베이스에 정보를 저장합니다.")
     @PostMapping(value = "/v2/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public BaseResponse<List<Long>> createImageParallel(@Parameter(hidden = true) @Login Member member, @RequestPart MultipartFile[] images) throws IOException {
+    public BaseResponse<List<Long>> createImageParallel(@Parameter(hidden = true) @Login Member member, @RequestPart MultipartFile[] images) {
         List<String> imageKeys = imageManager.uploadImagesParallel(List.of(images), UUID.randomUUID());
         List<Long> imageIds = imageService.createImagesParallel(imageKeys, member);
+        return new BaseResponse<>(imageIds);
+    }
+
+    @PostMapping(value = "/v3/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public BaseResponse<List<Long>> createImageAsync(@Parameter(hidden = true) @Login Member member, @RequestPart MultipartFile[] images) {
+        List<Image> entities = imageManager.uploadImagesAsync(List.of(images), UUID.randomUUID(), member);
+        List<Long> imageIds = imageService.createImagesAsync(entities);
+        return new BaseResponse<>(imageIds);
+    }
+
+    @PostMapping(value = "/v4/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public BaseResponse<List<Long>> createImageAsyncV3(@Parameter(hidden = true) @Login Member member, @RequestPart MultipartFile[] images) {
+        List<String> keys = imageManager.uploadImagesAsyncV3(List.of(images), UUID.randomUUID());
+        List<Long> imageIds = imageService.createImagesAsyncV3(keys, member);
+        return new BaseResponse<>(imageIds);
+    }
+
+    @PostMapping(value = "/v5/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public BaseResponse<List<Long>> createImageAsyncV5(@Parameter(hidden = true) @Login Member member, @RequestPart MultipartFile[] images) {
+        List<String> keys = imageManager.uploadImagesAsyncV4(List.of(images), UUID.randomUUID());
+        List<Long> imageIds = imageService.createImagesAsyncV4(keys, member);
+        return new BaseResponse<>(imageIds);
+    }
+
+    @PostMapping(value = "/v6/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public BaseResponse<List<Long>> createImageAsyncV6(@Parameter(hidden = true) @Login Member member, @RequestPart MultipartFile[] images) {
+        List<String> keys = imageManager.uploadImagesAsyncV5(List.of(images), UUID.randomUUID());
+        List<Long> imageIds = imageService.createImagesAsyncV4(keys, member);
         return new BaseResponse<>(imageIds);
     }
 
